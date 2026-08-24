@@ -3,8 +3,7 @@
 // que já é tratado em api.js) e oferece funções prontas pra usar nas telas.
 
 import { getAuthToken, clearAuthToken, apiRequest } from './api.js';
-
-const USUARIO_KEY = 'scout_usuario';
+import { USUARIO_KEY } from '../constants/storage.js';
 
 // retorna o usuário salvo no localStorage (ou null se não tiver ninguém logado)
 export function getUsuarioLogado() {

@@ -12,17 +12,18 @@ import Perfil           from './pages/Perfil.jsx'
 import AdicionarAtletas from './pages/AdicionarAtletas.jsx'
 import AtletaDetalhes   from './pages/AtletaDetalhes.jsx'
 import DetalheJogo      from './pages/DetalheJogo.jsx'
+import PrivateRoute     from './components/PrivateRoute.jsx'
 
 const rotas = {
   '':                    <Inicial />,
   '#/login':             <Login />,
-  '#/scoutlive':         <ScoutLive />,
-  '#/jogos':             <Jogos />,
-  '#/atletas':           <Atletas />,
-  '#/perfil':            <Perfil />,
-  '#/adicionar-atletas': <AdicionarAtletas />,
-  '#/atleta-detalhes':   <AtletaDetalhes />,
-  '#/detalhe-jogo':      <DetalheJogo />,
+  '#/scoutlive':         <PrivateRoute><ScoutLive /></PrivateRoute>,
+  '#/jogos':             <PrivateRoute><Jogos /></PrivateRoute>,
+  '#/atletas':           <PrivateRoute><Atletas /></PrivateRoute>,
+  '#/perfil':            <PrivateRoute><Perfil /></PrivateRoute>,
+  '#/adicionar-atletas': <PrivateRoute><AdicionarAtletas /></PrivateRoute>,
+  '#/atleta-detalhes':   <PrivateRoute><AtletaDetalhes /></PrivateRoute>,
+  '#/detalhe-jogo':      <PrivateRoute><DetalheJogo /></PrivateRoute>,
 }
 
 export default function App() {

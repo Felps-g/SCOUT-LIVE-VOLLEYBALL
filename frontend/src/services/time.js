@@ -7,8 +7,7 @@
 //   para ser compartilhado entre Atletas, AdicionarAtletas e ScoutLive)
 
 import { apiRequest } from './api.js';
-
-const CHAVE_TIME_SELECIONADO = 'time_selecionado';
+import { TIME_SELECIONADO_KEY as CHAVE_TIME_SELECIONADO } from '../constants/storage.js';
 
 export function getTimeSelecionado() {
   try {

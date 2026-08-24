@@ -59,7 +59,14 @@ export default function Login() {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginSenha, setLoginSenha] = useState('');
   const [senhaLoginVisivel, setSenhaLoginVisivel] = useState(false);
-  const [erroLogin, setErroLogin]   = useState('');
+  const [erroLogin, setErroLogin]   = useState(() => {
+    // se veio de um redirecionamento por sessão expirada (ver o
+    // interceptor de 401 em services/api.js), já mostra o motivo em vez
+    // de deixar a pessoa achando que digitou a senha errada
+    const query = window.location.hash.split('?')[1] || '';
+    const motivo = new URLSearchParams(query).get('motivo');
+    return motivo === 'sessao-expirada' ? 'Sua sessão expirou. Faça login novamente.' : '';
+  });
   const [camposErroLogin, setCamposErroLogin] = useState([]);
   const [loginCarregando, setLoginCarregando] = useState(false);
 
