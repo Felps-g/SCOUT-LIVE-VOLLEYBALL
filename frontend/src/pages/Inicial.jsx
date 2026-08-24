@@ -83,13 +83,12 @@ export default function Inicial() {
       ) : (
         /* LANDING — visitante não autenticado: chamada clara pro login,
            em vez da grade de navegação que só ia redirecionar de volta pra cá */
-        <div className="grade-navegacao landing-publica">
+        <div className="landing-publica">
+          <h2 className="landing-titulo">Bem-vindo ao Scout Live</h2>
           <p className="landing-texto">
             Gerencie times, jogadores e faça o scout dos seus jogos de vôlei ao vivo.
           </p>
-          <a href="#/login" className="botao-nav botao-nav--ao-vivo">
-            <span className="rotulo-nav">Entrar ou criar conta</span>
-          </a>
+          <a href="#/login" className="landing-botao">Entrar ou criar conta</a>
         </div>
       )}
 
