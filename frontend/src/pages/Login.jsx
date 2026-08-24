@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import '../../css/login.css';
 import { apiRequest, setAuthToken } from '../services/api.js';
-import { buscarPerfilAtual, salvarUsuarioLogado } from '../services/auth.js';
+import { buscarPerfilAtual } from '../services/auth.js';
+import { useAuth } from '../contexts/AuthContext.jsx';
 import telaImg from '../assets/IMG/Tela.png';
 
 // ── MÁSCARA DE CPF ───────────────────────────
@@ -52,6 +53,17 @@ const SvgOlhoFechado = () => (
 );
 
 export default function Login() {
+  const { estado, login } = useAuth();
+
+  // já está autenticado e caiu na tela de login (ex: digitou a URL de
+  // novo por engano) — manda direto pra área logada em vez de mostrar
+  // o formulário de novo
+  useEffect(() => {
+    if (estado === 'autenticado') {
+      window.location.hash = '';
+    }
+  }, [estado]);
+
   // ── ALTERNÂNCIA DE ABAS ──────────────────────
   const [abaAtiva, setAbaAtiva] = useState('entrar');
 
@@ -126,12 +138,14 @@ export default function Login() {
 
       // o /auth/login só devolve id e email; buscamos o perfil completo
       // (com o nome cadastrado) pra usar no avatar e na tela de perfil.
+      let usuarioCompleto = dados.usuario;
       try {
-        await buscarPerfilAtual();
+        usuarioCompleto = await buscarPerfilAtual();
       } catch {
-        salvarUsuarioLogado(dados.usuario);
+        // segue com os dados básicos que o login já devolveu
       }
 
+      login(usuarioCompleto);
       window.location.hash = '';
     } catch (err) {
       setErroLogin(err.message);

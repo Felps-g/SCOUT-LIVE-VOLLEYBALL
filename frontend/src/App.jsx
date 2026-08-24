@@ -1,8 +1,12 @@
 // App.jsx — roteamento entre as páginas do Scout Live
-// Por enquanto usa hash na URL para navegar sem precisar de servidor.
-// Quando o backend estiver pronto, trocar por React Router ou Next.js.
+// Hash na URL para navegar sem precisar de servidor (evita 404 em
+// produção que rotas "de verdade" teriam sem configuração extra no host).
+//
+// Convenção: tudo que exige login vive sob "#/app/..." — a checagem de
+// autenticação é UM prefixo só, não uma por rota.
 
 import { useState, useEffect } from 'react'
+import { AuthProvider } from './contexts/AuthContext.jsx'
 import Inicial          from './pages/Inicial.jsx'
 import Login            from './pages/Login.jsx'
 import ScoutLive        from './pages/ScoutLive.jsx'
@@ -14,16 +18,21 @@ import AtletaDetalhes   from './pages/AtletaDetalhes.jsx'
 import DetalheJogo      from './pages/DetalheJogo.jsx'
 import PrivateRoute     from './components/PrivateRoute.jsx'
 
-const rotas = {
-  '':                    <Inicial />,
-  '#/login':             <Login />,
-  '#/scoutlive':         <PrivateRoute><ScoutLive /></PrivateRoute>,
-  '#/jogos':             <PrivateRoute><Jogos /></PrivateRoute>,
-  '#/atletas':           <PrivateRoute><Atletas /></PrivateRoute>,
-  '#/perfil':            <PrivateRoute><Perfil /></PrivateRoute>,
-  '#/adicionar-atletas': <PrivateRoute><AdicionarAtletas /></PrivateRoute>,
-  '#/atleta-detalhes':   <PrivateRoute><AtletaDetalhes /></PrivateRoute>,
-  '#/detalhe-jogo':      <PrivateRoute><DetalheJogo /></PrivateRoute>,
+// rotas públicas
+const rotasPublicas = {
+  '':        <Inicial />,
+  '#/login': <Login />,
+}
+
+// rotas privadas — todas sob "#/app/..."
+const rotasPrivadas = {
+  '#/app/scout':          <ScoutLive />,
+  '#/app/jogos':          <Jogos />,
+  '#/app/jogos/detalhes': <DetalheJogo />,
+  '#/app/atletas':        <Atletas />,
+  '#/app/atletas/novo':   <AdicionarAtletas />,
+  '#/app/atletas/detalhes': <AtletaDetalhes />,
+  '#/app/perfil':         <Perfil />,
 }
 
 export default function App() {
@@ -35,10 +44,19 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
 
-  // separa o caminho da query string: "#/detalhe-jogo?id=123" -> "#/detalhe-jogo"
-  // sem isso, qualquer link com "?id=" não batia com nenhuma chave de `rotas`
-  // e caía sempre na tela inicial.
+  // separa o caminho da query string: "#/app/jogos/detalhes?id=123" ->
+  // "#/app/jogos/detalhes" — sem isso, link com "?id=" não bate com
+  // nenhuma chave de `rotas` e cai sempre na tela inicial.
   const caminho = hash.split('?')[0]
+  const ehPrivada = caminho.startsWith('#/app')
 
-  return rotas[caminho] ?? <Inicial />
+  const tela = ehPrivada
+    ? (rotasPrivadas[caminho] ?? <Inicial />)
+    : (rotasPublicas[caminho] ?? <Inicial />)
+
+  return (
+    <AuthProvider>
+      {ehPrivada ? <PrivateRoute>{tela}</PrivateRoute> : tela}
+    </AuthProvider>
+  )
 }

@@ -561,7 +561,7 @@ export default function ScoutLive() {
 
       {/* ── RODAPÉ ── */}
       <footer className="footer">
-        <a href="#" className="btn-inicio">
+        <a href="#/" className="btn-inicio">
           <IcHome />
           <span>Início</span>
         </a>

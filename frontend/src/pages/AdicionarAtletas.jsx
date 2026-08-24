@@ -321,7 +321,7 @@ export default function AdicionarAtletas() {
       </main>
 
       <footer className="rodape">
-        <a href="#/atletas" className="botao-inicio">
+        <a href="#/app/atletas" className="botao-inicio">
           <img src={voltarImg} className="icone-voltar" />
           voltar
         </a>

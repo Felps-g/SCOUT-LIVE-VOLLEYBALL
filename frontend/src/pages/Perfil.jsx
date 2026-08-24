@@ -10,8 +10,11 @@ import olhoFechadoImg from '../assets/IMG/olho-fechado.png';
 import casaImg from '../assets/IMG/casa.png';
 import { apiRequest } from '../services/api.js';
 import { estaLogado, buscarPerfilAtual, limparSessao } from '../services/auth.js';
+import { useAuth } from '../contexts/AuthContext.jsx';
 
 export default function Perfil() {
+  const { logout } = useAuth();
+
   // guarda a instância do cropper pra poder destruir quando fechar
   const cropperRef = useRef(null);
 
@@ -216,8 +219,7 @@ export default function Perfil() {
 
   // SAIR DA CONTA
   function handleSair() {
-    limparSessao();
-    window.location.hash = '#/login';
+    logout();
   }
 
   // enquanto verifica se tem sessão ativa, não mostra nada pra evitar
@@ -245,7 +247,7 @@ export default function Perfil() {
         </main>
 
         <footer className="rodape">
-          <a href="#" className="botao-inicio">
+          <a href="#/" className="botao-inicio">
             <img src={casaImg} className="icone-casa" />
             Início
           </a>
@@ -323,7 +325,7 @@ export default function Perfil() {
       </main>
 
       <footer className="rodape">
-        <a href="#" className="botao-inicio">
+        <a href="#/" className="botao-inicio">
           <img src={casaImg} className="icone-casa" />
           Início
         </a>

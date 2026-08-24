@@ -5,15 +5,12 @@ import { authenticateToken } from '../middlewares/authMiddleware.js';
 const router = Router();
 
 // Todas as rotas de times requerem autenticação
-router.get('/teams', authenticateToken, listarTimes);
+// (a rota em inglês '/teams' foi removida — o frontend só usa '/times',
+// e mantê-la só servia como superfície de API morta)
 router.get('/times', authenticateToken, listarTimes);
-router.get('/teams/:id', authenticateToken, buscarTime);
 router.get('/times/:id', authenticateToken, buscarTime);
-router.post('/teams', authenticateToken, criarTime);
 router.post('/times', authenticateToken, criarTime);
-router.put('/teams/:id', authenticateToken, atualizarTime);
 router.put('/times/:id', authenticateToken, atualizarTime);
-router.delete('/teams/:id', authenticateToken, deletarTime);
 router.delete('/times/:id', authenticateToken, deletarTime);
 
 export default router;

@@ -10,7 +10,7 @@ import { apiRequest } from '../services/api.js';
 import { atualizarJogador } from '../services/time.js';
 
 export default function AtletaDetalhes() {
-  // com hash routing o query string fica dentro do hash: #/atleta-detalhes?id=123
+  // com hash routing o query string fica dentro do hash: #/app/atletas/detalhes?id=123
   const queryString = window.location.hash.split('?')[1] || '';
   const params = new URLSearchParams(queryString);
   const atletaId = params.get('id');
@@ -151,7 +151,7 @@ export default function AtletaDetalhes() {
 
     try {
       await apiRequest(`/players/${atletaId}`, { method: 'DELETE' });
-      window.location.hash = '#/atletas';
+      window.location.hash = '#/app/atletas';
     } catch (err) {
       alert(err.message || 'Erro ao excluir atleta');
     }
@@ -176,7 +176,7 @@ export default function AtletaDetalhes() {
           <p style={{ color: '#ff6b7a' }}>{erro || 'Atleta não encontrado.'}</p>
         </main>
         <footer className="rodape">
-          <a href="#/atletas" className="botao-inicio">
+          <a href="#/app/atletas" className="botao-inicio">
             <img src={voltarImg} className="icone-voltar" />
             Voltar
           </a>
@@ -332,7 +332,7 @@ export default function AtletaDetalhes() {
       </main>
 
       <footer className="rodape">
-        <a href="#/atletas" className="botao-inicio">
+        <a href="#/app/atletas" className="botao-inicio">
           <img src={voltarImg} className="icone-voltar" />
           Voltar
         </a>

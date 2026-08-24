@@ -117,7 +117,7 @@ export default function Jogos() {
 
         {jogosFiltrados.map(jogo => (
           <a
-            href={`#/detalhe-jogo?id=${jogo.id}`}
+            href={`#/app/jogos/detalhes?id=${jogo.id}`}
             className="jogo-item"
             data-resultado={jogo.resultado_final}
             key={jogo.id}
@@ -139,7 +139,7 @@ export default function Jogos() {
       </div>
 
       <nav className="barra-inferior">
-        <a href="#" className="botao-inicio">
+        <a href="#/" className="botao-inicio">
           <img src={casaImg} className="icone-casa" />
           Início
         </a>

@@ -174,7 +174,7 @@ export default function DetalheJogo() {
   const posicaoCanvasRef     = useRef(null);
   const posicaoChartRef      = useRef(null);
 
-  // pega o id do jogo que veio na url: #/detalhe-jogo?id=123
+  // pega o id do jogo que veio na url: #/app/jogos/detalhes?id=123
   // (com hash routing o query string fica dentro do hash, não em location.search)
   const queryString = window.location.hash.split('?')[1] || '';
   const params = new URLSearchParams(queryString);
@@ -385,7 +385,7 @@ export default function DetalheJogo() {
 
     try {
       await apiRequest(`/matches/${jogoId}`, { method: 'DELETE' });
-      window.location.hash = '#/jogos';
+      window.location.hash = '#/app/jogos';
     } catch (err) {
       alert(err.message || 'Erro ao excluir jogo');
     }
@@ -489,7 +489,7 @@ export default function DetalheJogo() {
           <p style={{ color: '#ff6b7a' }}>{erro || 'Jogo não encontrado.'}</p>
         </main>
         <footer className="rodape">
-          <a href="#/jogos" className="botao-voltar">
+          <a href="#/app/jogos" className="botao-voltar">
             <img src={voltarImg} className="icone-voltar" />
             Voltar
           </a>
@@ -616,7 +616,7 @@ export default function DetalheJogo() {
       </main>
 
       <footer className="rodape">
-        <a href="#/jogos" className="botao-voltar">
+        <a href="#/app/jogos" className="botao-voltar">
           <img src={voltarImg} className="icone-voltar" />
           Voltar
         </a>

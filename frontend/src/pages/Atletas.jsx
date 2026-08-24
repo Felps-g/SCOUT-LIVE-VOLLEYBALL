@@ -78,7 +78,7 @@ export default function Atletas() {
         )}
 
         <div className="atletas-barra">
-          <a href="#/adicionar-atletas" className="btn-adicionar">
+          <a href="#/app/atletas/novo" className="btn-adicionar">
             <img src={maisImg} className="btn-mais" />
             Adicionar atleta
           </a>
@@ -112,7 +112,7 @@ export default function Atletas() {
                 } : undefined}
               ></div>
               <span className="atleta-nome">{atleta.name}</span>
-              <a href={`#/atleta-detalhes?id=${atleta.id}`} className="btn-detalhes">Ver detalhes</a>
+              <a href={`#/app/atletas/detalhes?id=${atleta.id}`} className="btn-detalhes">Ver detalhes</a>
             </div>
           ))}
         </div>
@@ -120,7 +120,7 @@ export default function Atletas() {
       </main>
 
       <footer className="rodape">
-        <a href="#" className="botao-inicio">
+        <a href="#/" className="botao-inicio">
           <img src={casaImg} className="icone-casa" />
           Início
         </a>
