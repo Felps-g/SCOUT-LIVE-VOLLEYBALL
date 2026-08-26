@@ -369,6 +369,228 @@ button { font-family: inherit; }
 
 .ponto--verde { background: #2ecc71; }
 .ponto--cinza { background: rgba(255,255,255,0.35); }
+.ponto--vermelho { background: #e8273a; }
+
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE × DESKTOP — troca de layout na tela de scout
+   (celular: lista + modal. desktop: tabela com +/- inline)
+═══════════════════════════════════════════════════════════ */
+
+.so-desktop { display: none; }
+
+@media (min-width: 900px) {
+  .so-mobile { display: none !important; }
+  .legenda.so-desktop { display: flex; }
+  .tabela-scout-wrap.so-desktop { display: flex; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   TABELA DE SCOUT — DESKTOP
+═══════════════════════════════════════════════════════════ */
+
+.tabela-scout-wrap {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  flex-direction: column;
+}
+
+.tabela-scroll {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow: auto;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  background: #0b1730;
+}
+
+.tabela-scout {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.tabela-scout th,
+.tabela-scout td {
+  padding: 8px 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tabela-scout thead th {
+  position: sticky;
+  top: 0;
+  background: #0d1c38;
+  z-index: 2;
+}
+
+.tabela-grupo-row th {
+  height: 34px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #4d9fff;
+  padding-top: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-right: 1px solid rgba(255,255,255,0.09);
+}
+
+.tabela-grupo-row th:last-child { border-right: none; }
+
+.tabela-sub-row th {
+  height: 30px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  padding-top: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  top: 34px;
+}
+
+/* divisória entre um grupo de fundamento e o próximo (ex: fim do Saque,
+   fim da Recepção...), aplicada tanto no cabeçalho quanto nas células */
+.col-divisor {
+  border-right: 1px solid rgba(255,255,255,0.09);
+}
+
+/* linhas dos jogadores: sem altura fixa, então dividem entre si todo o
+   espaço que sobrar da tabela (evita a faixa vazia embaixo do elenco) */
+.tabela-linha { height: auto; }
+
+.th-num { width: 44px; }
+.th-jogador { width: 210px; text-align: center !important; }
+
+.tabela-linha {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.15s;
+}
+
+.tabela-linha:hover { background: rgba(255,255,255,0.03); }
+
+.td-numero { width: 44px; }
+
+.td-jogador {
+  text-align: center !important;
+  white-space: normal;
+  border-right: 1px solid rgba(255,255,255,0.09);
+  padding-left: 32px;
+}
+
+/* jogador (número de cadastro + nome + posição): número sempre fixo à
+   esquerda da célula, nome/posição centralizados no espaço restante */
+.td-jogador-info {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.td-jogador-numero {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1a5dc8, #2d7fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.td-jogador-textos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 0;
+}
+
+.td-nome {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.td-posicao {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+}
+
+.td-vazia {
+  color: rgba(255,255,255,0.22);
+  font-weight: 700;
+}
+
+/* ── contador +/- de cada célula ── */
+
+.cc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.cc-valor {
+  min-width: 14px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.cc-btn {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.cc-btn:active:not(:disabled) { transform: scale(0.9); }
+
+.cc-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.cc-btn--mais { background: #2ecc71; }
+.cc-btn--mais:hover:not(:disabled) { opacity: 0.85; }
+
+.cc-btn--menos { background: #e8273a; }
+.cc-btn--menos:hover:not(:disabled) { opacity: 0.85; }
+
+/* cor dos botões +/- de acordo com a coluna (acerto = verde, erro = vermelho) */
+.cc-btn--verde { background: #2ecc71; }
+.cc-btn--verde:hover:not(:disabled) { opacity: 0.85; }
+
+.cc-btn--vermelho { background: #e8273a; }
+.cc-btn--vermelho:hover:not(:disabled) { opacity: 0.85; }
 
 .toque-label {
   font-size: 0.72rem;
@@ -922,7 +1144,7 @@ button { font-family: inherit; }
 ═══════════════════════════════════════════════════════════ */
 
 @media (min-width: 900px) {
-  .escalacao-content { padding: 40px 24px 56px; }
+  .escalacao-content { padding: 40px 40px 56px; max-width: 900px; }
 
   .ej-posicoes { min-width: 260px; }
 
@@ -934,6 +1156,36 @@ button { font-family: inherit; }
   }
 
   .modal-handle { display: none; }
+
+  /* tela de scout no desktop não rola — a tabela ocupa o espaço
+     restante e só ela ganha scroll interno, se sobrar conteúdo */
+  .main {
+    overflow: hidden;
+    padding: 16px 32px 18px;
+  }
+
+  .topo-scout,
+  .legenda,
+  .tabela-scout-wrap { max-width: 1800px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TELAS BEM LARGAS  ≥ 1300px
+   O card fica mais largo pra caber as 5 posições numa linha só,
+   mesmo com nomes de atleta grandes — continua um card por linha
+═══════════════════════════════════════════════════════════ */
+
+@media (min-width: 1300px) {
+  .escalacao-content { max-width: 1240px; padding: 48px 48px 64px; }
+
+  .escalacao-titulo { font-size: 1.75rem; }
+  .escalacao-sub { font-size: 0.98rem; max-width: 720px; }
+
+  .escalacao-jogador { padding: 18px 24px; flex-wrap: nowrap; }
+
+  .ej-info { min-width: 260px; }
+
+  .ej-posicoes { flex-wrap: nowrap; }
 }
 
 
@@ -989,4 +1241,32 @@ button { font-family: inherit; }
   .lj-fpill { font-size: 0.6rem; padding: 2px 4px; }
   .lj-flabel { font-size: 0.56rem; }
   .ej-btn-pos { padding: 6px 10px; font-size: 0.68rem; }
+}
+
+/* ════════════════════════════════
+   CARREGANDO (spinner central, framer-motion)
+════════════════════════════════ */
+
+.carregando-jogos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 40px 16px;
+  width: 100%;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.12);
+  border-top-color: #2d7fff;
+}
+
+.carregando-texto {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
 }

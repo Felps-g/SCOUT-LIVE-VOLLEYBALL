@@ -165,21 +165,16 @@
 
 .grade-principal {
   display: grid;
-  grid-template-columns: 1fr 1fr 0.95fr;
-  grid-template-rows: 1fr 1fr;
-  grid-template-areas:
-    "evolucao fundpont    ranking"
-    "posicao  fundnaopont ranking";
+  grid-template-columns: 2.15fr 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "hub ranking";
   gap: 14px;
   flex: 1;
   min-height: 0;
 }
 
-.card-evolucao       { grid-area: evolucao; }
-.card-fundamentos    { grid-area: fundpont; }
-.card-fundamentos-nao { grid-area: fundnaopont; }
-.card-posicao         { grid-area: posicao; }
-.card-ranking          { grid-area: ranking; }
+.card-hub     { grid-area: hub; }
+.card-ranking { grid-area: ranking; }
 
 /* cards */
 
@@ -209,6 +204,118 @@
 .card-grafico {
   border-color: rgba(45,127,255,0.2);
 }
+
+.card-titulo--hub {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.card-subtitulo-hub {
+  text-transform: none;
+  letter-spacing: 0.2px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.35);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* seletor de gráficos — cartões que o usuário clica pra trocar o gráfico ativo */
+
+.grafico-seletor {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px 0;
+  overflow-x: auto;
+  flex-shrink: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+
+.grafico-seletor::-webkit-scrollbar {
+  height: 5px;
+}
+
+.grafico-seletor::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 10px;
+}
+
+.grafico-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  flex-shrink: 0;
+  min-width: 150px;
+  max-width: 210px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 13px;
+  padding: 10px 13px;
+  cursor: pointer;
+  text-align: left;
+  font-family: "Nexa", Arial, sans-serif;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.grafico-tile:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.18);
+}
+
+.grafico-tile:active { transform: scale(0.97); }
+
+.grafico-tile-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.grafico-tile-titulo {
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: rgba(255,255,255,0.75);
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.grafico-tile-tipo {
+  align-self: flex-start;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.06);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+/* cor de destaque por categoria de gráfico */
+
+.grafico-tile--azul.grafico-tile--ativo {
+  background: rgba(45,127,255,0.12);
+  border-color: rgba(45,127,255,0.5);
+}
+.grafico-tile--verde.grafico-tile--ativo {
+  background: rgba(61,214,140,0.1);
+  border-color: rgba(61,214,140,0.45);
+}
+.grafico-tile--dourado.grafico-tile--ativo {
+  background: rgba(255,200,50,0.1);
+  border-color: rgba(255,200,50,0.45);
+}
+
+.grafico-tile--ativo .grafico-tile-titulo { color: #fff; }
+.grafico-tile--azul.grafico-tile--ativo .grafico-tile-tipo    { color: #4d9fff; background: rgba(45,127,255,0.18); }
+.grafico-tile--verde.grafico-tile--ativo .grafico-tile-tipo   { color: #3dd68c; background: rgba(61,214,140,0.18); }
+.grafico-tile--dourado.grafico-tile--ativo .grafico-tile-tipo { color: #ffc832; background: rgba(255,200,50,0.2); }
 
 .grafico-wrapper {
   flex: 1;
@@ -393,17 +500,14 @@
   }
 
   .grade-principal {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
     grid-template-areas:
-      "evolucao    evolucao"
-      "fundpont    posicao"
-      "fundnaopont fundnaopont"
-      "ranking     ranking";
+      "hub"
+      "ranking";
   }
 
-  .card-evolucao { min-height: 220px; }
-  .card-fundamentos, .card-fundamentos-nao, .card-posicao { min-height: 200px; }
+  .card-hub { min-height: 380px; }
   .card-ranking { min-height: 220px; }
 }
 
@@ -460,16 +564,29 @@
     grid-template-columns: 1fr;
     grid-template-rows: none;
     grid-template-areas:
-      "evolucao"
-      "fundpont"
-      "fundnaopont"
-      "posicao"
+      "hub"
       "ranking";
     flex: unset;
   }
 
-  .card-grafico {
-    min-height: 220px;
+  .card-hub {
+    min-height: 340px;
+  }
+
+  .grafico-seletor {
+    padding: 10px 12px 0;
+  }
+
+  .grafico-tile {
+    min-width: 130px;
+    max-width: 170px;
+    padding: 8px 10px;
+  }
+
+  .grafico-tile-titulo { font-size: 11px; }
+
+  .card-subtitulo-hub {
+    display: none;
   }
 
   .grafico-wrapper {
@@ -490,4 +607,32 @@
   .ranking-avatar svg { width: 16px; height: 16px; }
 
   .rodape { padding: 8px 14px; }
+}
+
+/* ════════════════════════════════
+   CARREGANDO (spinner central, framer-motion)
+════════════════════════════════ */
+
+.carregando-jogos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 70px 16px;
+  width: 100%;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.12);
+  border-top-color: #2d7fff;
+}
+
+.carregando-texto {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
 }
