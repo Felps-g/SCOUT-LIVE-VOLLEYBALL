@@ -65,6 +65,13 @@ export default function Inicial() {
             <span className="rotulo-nav">Jogos</span>
           </a>
 
+          <a href="#/app/equipes" className="botao-nav botao-nav--atletas">
+            <div className="icone-nav">
+              <img src={atletasImg} />
+            </div>
+            <span className="rotulo-nav">Equipes</span>
+          </a>
+
           <a href="#/app/atletas" className="botao-nav botao-nav--atletas">
             <div className="icone-nav">
               <img src={atletasImg} />

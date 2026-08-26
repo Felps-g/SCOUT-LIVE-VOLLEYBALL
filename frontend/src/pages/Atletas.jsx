@@ -1,24 +1,9 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import '../../css/atletas.css';
 import maisImg from '../assets/IMG/mais.png';
 import lupaImg from '../assets/IMG/lupa.png';
 import casaImg from '../assets/IMG/casa.png';
 import { listarTimes, listarJogadores, getTimeSelecionado, setTimeSelecionado } from '../services/time.js';
-
-// spinner central exibido enquanto os atletas ainda não chegaram da API
-function CarregandoAtletas() {
-  return (
-    <div className="carregando-jogos">
-      <motion.div
-        className="spinner"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
-      />
-      <span className="carregando-texto">Carregando atletas…</span>
-    </div>
-  );
-}
 
 export default function Atletas() {
   // BUSCA DE ATLETAS
@@ -88,7 +73,7 @@ export default function Atletas() {
 
         {!carregando && !timeAtual && (
           <p style={{ color: '#fff', opacity: 0.7 }}>
-            Você ainda não tem um time. Crie o seu time na aba Scout live antes de cadastrar atletas.
+            Você ainda não tem uma equipe. <a href="#/app/equipes" style={{ color: '#4d9fff' }}>Crie a sua equipe</a> antes de cadastrar atletas.
           </p>
         )}
 
@@ -109,7 +94,7 @@ export default function Atletas() {
           </div>
         </div>
 
-        {carregando && <CarregandoAtletas />}
+        {carregando && <p style={{ color: '#fff', opacity: 0.7 }}>Carregando atletas…</p>}
         {erro && <p style={{ color: '#ff6b7a' }}>{erro}</p>}
         {!carregando && !erro && timeAtual && atletasFiltrados.length === 0 && (
           <p style={{ color: '#fff', opacity: 0.7 }}>Nenhum atleta cadastrado neste time ainda.</p>

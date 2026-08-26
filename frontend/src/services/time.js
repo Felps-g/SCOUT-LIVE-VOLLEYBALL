@@ -34,10 +34,23 @@ export async function listarTimes() {
 }
 
 // POST /api/times -> { mensagem, time }
-export async function criarTime(name) {
+// category tem um padrão ("Adversário") porque o ScoutLive cria times
+// adversários automaticamente só pelo nome, sem pedir categoria — só as
+// equipes de verdade do técnico (criadas pela tela de Equipes) informam
+// uma categoria real.
+export async function criarTime(name, category = 'Adversário') {
   const resposta = await apiRequest('/times', {
     method: 'POST',
-    body: { name }
+    body: { name, category }
+  });
+  return resposta.time;
+}
+
+// PUT /api/times/:id -> { mensagem, time }
+export async function atualizarTime(id, payload) {
+  const resposta = await apiRequest(`/times/${id}`, {
+    method: 'PUT',
+    body: payload
   });
   return resposta.time;
 }

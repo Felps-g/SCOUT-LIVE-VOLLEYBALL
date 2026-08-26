@@ -1,0 +1,271 @@
+/* título — mesmo padrão das outras telas */
+
+.atletas-titulo-wrapper {
+  padding: 24px 24px 0;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.atletas-titulo {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.equipes-conteudo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* botão "criar equipe" — mesmo estilo do "adicionar atleta" */
+
+.btn-adicionar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #0e4385, #0062ff);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-family: "Nexa", Arial, sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  align-self: flex-start;
+  transition: opacity 0.2s;
+}
+.btn-adicionar:hover { opacity: 0.88; }
+.btn-mais { width: 16px; height: 16px; }
+
+.equipes-sucesso {
+  background: rgba(45, 200, 120, 0.12);
+  border: 1px solid rgba(45, 200, 120, 0.3);
+  color: #6fe3a3;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.equipes-erro {
+  color: #ff6b7a;
+  font-size: 13px;
+}
+
+/* formulário de criação */
+
+.equipes-form {
+  background: #0b1730;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+}
+
+.campo-input {
+  background: #060d1c;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  color: #fff;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+}
+.campo-input:focus { outline: none; border-color: #4d9fff; }
+
+.equipes-form-acoes {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-cancelar {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-salvar-equipe {
+  background: linear-gradient(135deg, #0e4385, #0062ff);
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-salvar-equipe:disabled { opacity: 0.6; cursor: default; }
+
+/* lista de equipes */
+
+.equipes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.equipe-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.equipe-card--ativa {
+  border-color: rgba(45,127,255,0.5);
+  background: rgba(45,127,255,0.08);
+}
+
+.equipe-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.equipe-nome {
+  font-weight: 700;
+  color: #fff;
+  font-size: 15px;
+}
+
+.equipe-categoria {
+  display: inline-block;
+  width: fit-content;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.btn-selecionar {
+  background: transparent;
+  border: 1px solid rgba(45,127,255,0.4);
+  color: #4d9fff;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.equipe-selecionada {
+  color: #6fe3a3;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* atalhos pra gerenciar a equipe selecionada */
+
+.equipes-gerenciar {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.equipes-gerenciar-titulo {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+
+.equipes-gerenciar-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.equipes-gerenciar-links a {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.equipes-gerenciar-links a:hover { background: rgba(45,127,255,0.12); }
+
+/* rodapé — mesmo padrão das outras telas */
+
+.rodape {
+  background: #080f20;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  align-items: center;
+  padding: 10px 24px;
+  flex-shrink: 0;
+}
+
+.botao-inicio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: rgba(45,127,255,0.15);
+  border: 1px solid rgba(45,127,255,0.3);
+  border-radius: 12px;
+  padding: 8px 16px;
+  color: #4d9fff;
+  cursor: pointer;
+  font-family: "Nexa", Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.botao-inicio:hover { background: rgba(45,127,255,0.25); }
+
+.icone-casa { width: 18px; height: 18px; stroke: #4d9fff; }

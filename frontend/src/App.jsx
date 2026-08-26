@@ -13,6 +13,7 @@ import ScoutLive        from './pages/ScoutLive.jsx'
 import Jogos            from './pages/Jogos.jsx'
 import Atletas          from './pages/Atletas.jsx'
 import Perfil           from './pages/Perfil.jsx'
+import Equipes          from './pages/Equipes.jsx'
 import AdicionarAtletas from './pages/AdicionarAtletas.jsx'
 import AtletaDetalhes   from './pages/AtletaDetalhes.jsx'
 import DetalheJogo      from './pages/DetalheJogo.jsx'
@@ -29,6 +30,7 @@ const rotasPrivadas = {
   '#/app/scout':          <ScoutLive />,
   '#/app/jogos':          <Jogos />,
   '#/app/jogos/detalhes': <DetalheJogo />,
+  '#/app/equipes':        <Equipes />,
   '#/app/atletas':        <Atletas />,
   '#/app/atletas/novo':   <AdicionarAtletas />,
   '#/app/atletas/detalhes': <AtletaDetalhes />,

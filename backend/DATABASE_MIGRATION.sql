@@ -202,3 +202,10 @@ CREATE POLICY player_match_stats_update ON public.player_match_stats FOR UPDATE
 DROP POLICY IF EXISTS player_match_stats_delete ON public.player_match_stats;
 CREATE POLICY player_match_stats_delete ON public.player_match_stats FOR DELETE
   USING (match_id IN (SELECT id FROM public.matches WHERE user_id = auth.uid()));
+-- ==========================
+-- CATEGORIA DA EQUIPE
+-- ==========================
+-- Texto livre (não é uma tabela separada — ver justificativa na
+-- documentação de regra de negócio). Nullable para não quebrar equipes
+-- já cadastradas sem categoria.
+ALTER TABLE public.teams ADD COLUMN IF NOT EXISTS category VARCHAR;
