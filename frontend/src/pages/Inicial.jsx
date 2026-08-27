@@ -4,8 +4,11 @@ import perfil1Img from '../assets/IMG/perfil1.png';
 import bolaImg from '../assets/IMG/bola.png';
 import atletasImg from '../assets/IMG/atletas.png';
 import perfilImg from '../assets/IMG/perfil.png';
+import equipeImg from '../assets/IMG/equipe.png';
 import { obterIniciais } from '../services/auth.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
+import ModalSelecionarEquipe from '../components/ModalSelecionarEquipe.jsx';
+import TelaCarregando from '../components/TelaCarregando.jsx';
 
 export default function Inicial() {
   const { estado, usuario } = useAuth();
@@ -13,7 +16,7 @@ export default function Inicial() {
   // ainda checando se existe sessão válida — evita mostrar a landing e
   // trocar pro dashboard (ou vice-versa) alguns instantes depois
   if (estado === 'carregando') {
-    return <div className="aplicativo tela-carregando">Carregando…</div>;
+    return <TelaCarregando className="aplicativo" />;
   }
 
   const logado = estado === 'autenticado';
@@ -21,6 +24,11 @@ export default function Inicial() {
 
   return (
     <div className="aplicativo">
+
+      {/* aparece de cara assim que a pessoa loga, antes de qualquer outra
+          coisa — pede pra selecionar a equipe ou, se ainda não tem
+          nenhuma, criar a primeira */}
+      {logado && <ModalSelecionarEquipe />}
 
       <header className="cabecalho">
         <a href="#/" className="logo-equipe">
@@ -67,7 +75,7 @@ export default function Inicial() {
 
           <a href="#/app/equipes" className="botao-nav botao-nav--atletas">
             <div className="icone-nav">
-              <img src={atletasImg} />
+              <img src={equipeImg} />
             </div>
             <span className="rotulo-nav">Equipes</span>
           </a>

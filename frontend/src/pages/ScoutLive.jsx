@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import '../../css/scoutlive.css';
 import { apiRequest } from '../services/api.js';
 import { getTimeSelecionado, listarJogadores, listarTimes, criarTime } from '../services/time.js';
-import SeletorTime from '../components/SeletorTime.jsx';
 
 /* ── ÍCONES SVG INLINE ─────────────────────────────────── */
 
@@ -213,7 +212,9 @@ function CelulaContador({ valor, onMais, onMenos, cor }) {
 /* ── COMPONENTE PRINCIPAL ───────────────────────────────── */
 
 export default function ScoutLive() {
-  const [timeAtual, setTimeAtual] = useState(getTimeSelecionado());
+  // fixo assim que a página abre — trocar de equipe agora só é feito na
+  // tela de Equipes; aqui é só leitura
+  const [timeAtual] = useState(getTimeSelecionado());
   const [jogadores, setJogadores] = useState([]);
   const [carregandoJogadores, setCarregandoJogadores] = useState(false);
   const [erroJogadores, setErroJogadores] = useState('');
@@ -272,12 +273,6 @@ export default function ScoutLive() {
     if (timeAtual) carregarJogadores(timeAtual);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function handleTimeChange(time) {
-    setTimeAtual(time);
-    setSelecoes({});
-    carregarJogadores(time);
-  }
 
   // número exibido ao lado do nome: sempre o número de cadastro do atleta
   // (campo jersey_number, preenchido no cadastro do jogador); só cai pra
@@ -686,8 +681,15 @@ export default function ScoutLive() {
               Escolha os 7 titulares e a posição de cada um <b>nesse jogo</b>.
             </p>
 
-            <div style={{ padding: '0 0 6px' }}>
-              <SeletorTime onChange={handleTimeChange} />
+            <div className="escalacao-time-atual">
+              <span className="escalacao-time-atual-rotulo">Equipe</span>
+              {timeAtual ? (
+                <span className="escalacao-time-atual-nome">{timeAtual.name}</span>
+              ) : (
+                <span className="escalacao-time-atual-vazio">
+                  Nenhuma equipe selecionada — <a href="#/app/equipes">escolha uma na tela de Equipes</a>
+                </span>
+              )}
             </div>
 
             <div className="escalacao-contador">

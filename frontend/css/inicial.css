@@ -215,6 +215,7 @@
 .botao-nav:nth-child(2) { animation-delay: 0.10s; }
 .botao-nav:nth-child(3) { animation-delay: 0.15s; }
 .botao-nav:nth-child(4) { animation-delay: 0.20s; }
+.botao-nav:nth-child(5) { animation-delay: 0.25s; }
 
 @keyframes surgir {
   from { opacity: 0; transform: translateY(20px); }
@@ -328,8 +329,10 @@
     font-size: 13px;
   }
 
+  /* 5 quadrados (Scout Live, Jogos, Equipes, Atletas, Perfil) — 3 colunas
+     cabem melhor num tablet do que 4, que sobrava 1 item sozinho na linha */
   .grade-navegacao {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     padding: 16px 40px 24px;
     gap: 16px;
     align-content: center;
@@ -391,7 +394,10 @@
     padding: 7px 14px 7px 7px;
   }
 
+  /* tela larga o bastante pra caber os 5 quadrados numa linha só,
+     incluindo o de Equipes */
   .grade-navegacao {
+    grid-template-columns: repeat(5, 1fr);
     padding: 20px 80px 24px;
     gap: 20px;
     flex: 1;
@@ -399,8 +405,8 @@
   }
 
   .botao-nav {
-    padding: 24px 20px;
-    gap: 14px;
+    padding: 24px 16px;
+    gap: 12px;
     border-radius: 20px;
     aspect-ratio: 3 / 4;
   }
@@ -518,45 +524,43 @@
     height: 18px;
   }
 
-  /* — grade ocupa o resto da tela sem rolar — */
+  /* — 5 itens não cabem mais como quadrados 2x2; no celular vira uma
+     lista de retângulos arredondados empilhados, com rolagem se precisar — */
   .grade-navegacao {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 10px;
     padding: 10px 14px calc(env(safe-area-inset-bottom, 0px) + 14px);
     flex: 1;
     min-height: 0;
-    overflow: hidden;
-    align-content: stretch;
+    overflow-y: auto;
   }
 
   .botao-nav {
-    aspect-ratio: unset;
+    flex-direction: row;
+    justify-content: flex-start;
     width: 100%;
-    height: 100%;
-    padding: 0;
-    border-radius: 18px;
-    gap: 10px;
-    min-height: 0;
-    min-width: 0;
-    align-self: stretch;
-    justify-self: stretch;
+    padding: 12px 16px;
+    border-radius: 16px;
+    gap: 14px;
+    flex-shrink: 0;
   }
 
   .icone-nav {
-    width: clamp(40px, 12vw, 56px);
-    height: clamp(40px, 12vw, 56px);
+    width: 46px;
+    height: 46px;
     border-radius: 13px;
+    flex-shrink: 0;
   }
 
   .icone-nav svg,
   .icone-nav img {
-    width: clamp(20px, 6vw, 28px);
-    height: clamp(20px, 6vw, 28px);
+    width: 24px;
+    height: 24px;
   }
 
   .rotulo-nav {
-    font-size: clamp(10px, 2.8vw, 13px);
+    font-size: 14px;
     letter-spacing: 1px;
   }
 

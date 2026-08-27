@@ -55,6 +55,11 @@ export async function atualizarTime(id, payload) {
   return resposta.time;
 }
 
+// DELETE /api/times/:id -> { mensagem }
+export async function deletarTime(id) {
+  return apiRequest(`/times/${id}`, { method: 'DELETE' });
+}
+
 // GET /api/players?team_id=... -> array de jogadores do time
 export async function listarJogadores(teamId) {
   if (!teamId) return [];

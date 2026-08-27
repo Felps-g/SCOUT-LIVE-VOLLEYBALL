@@ -96,6 +96,47 @@ button { font-family: inherit; }
 
 .escalacao-sub b { color: rgba(255,255,255,0.85); }
 
+/* exibição (somente leitura) da equipe já selecionada — trocar de
+   equipe agora é só na tela de Equipes */
+.escalacao-time-atual {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: #0b1730;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+
+.escalacao-time-atual-rotulo {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+
+.escalacao-time-atual-nome {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.escalacao-time-atual-vazio {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+}
+
+.escalacao-time-atual-vazio a {
+  color: #4d9fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+.escalacao-time-atual-vazio a:hover { text-decoration: underline; }
+
+
 .escalacao-contador {
   font-size: 0.8rem;
   font-weight: 800;

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import '../../css/atleta-detalhes.css';
 import '../../css/adicionar-atletas.css';
 import lixeiraImg from '../assets/IMG/lixeira.png';
@@ -8,6 +9,20 @@ import salvarImg from '../assets/IMG/salvar.png';
 import perfilImg from '../assets/IMG/perfil.png';
 import { apiRequest } from '../services/api.js';
 import { atualizarJogador } from '../services/time.js';
+
+// spinner central exibido enquanto os dados do atleta ainda não chegaram da API
+function CarregandoAtleta() {
+  return (
+    <div className="carregando-jogos">
+      <motion.div
+        className="spinner"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+      />
+      <span className="carregando-texto">Carregando atleta…</span>
+    </div>
+  );
+}
 
 export default function AtletaDetalhes() {
   // com hash routing o query string fica dentro do hash: #/app/atletas/detalhes?id=123
@@ -162,7 +177,13 @@ export default function AtletaDetalhes() {
       <div className="pagina-app">
         <div className="atletas-titulo-wrapper"><h1 className="atletas-titulo">Atletas</h1></div>
         <main className="atletas-conteudo">
-          <p style={{ color: '#fff', opacity: 0.7 }}>Carregando atleta…</p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            <CarregandoAtleta />
+          </motion.div>
         </main>
       </div>
     );

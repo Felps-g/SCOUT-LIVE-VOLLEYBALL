@@ -14,6 +14,12 @@
   text-transform: uppercase;
 }
 
+.equipes-subtitulo {
+  margin-top: 6px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .equipes-conteudo {
   flex: 1;
   display: flex;
@@ -22,9 +28,13 @@
   padding: 20px 24px;
   overflow-y: auto;
   min-height: 0;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-/* botão "criar equipe" — mesmo estilo do "adicionar atleta" */
+/* botão "criar equipe" */
 
 .btn-adicionar {
   display: flex;
@@ -59,6 +69,36 @@
 .equipes-erro {
   color: #ff6b7a;
   font-size: 13px;
+}
+
+.equipes-erro--inline {
+  display: block;
+  margin-top: -4px;
+}
+
+/* spinner de carregamento (framer-motion) */
+
+.carregando-jogos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 50px 16px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.12);
+  border-top-color: #2d7fff;
+}
+
+.carregando-texto {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
 }
 
 /* formulário de criação */
@@ -128,7 +168,9 @@
 }
 .btn-salvar-equipe:disabled { opacity: 0.6; cursor: default; }
 
-/* lista de equipes */
+/* ════════════════════════════════
+   LISTA DE EQUIPES
+════════════════════════════════ */
 
 .equipes-lista {
   display: flex;
@@ -137,6 +179,7 @@
 }
 
 .equipe-card {
+  position: relative;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 12px;
@@ -145,17 +188,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .equipe-card--ativa {
   border-color: rgba(45,127,255,0.5);
   background: rgba(45,127,255,0.08);
-}
-
-.equipe-card-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
 
 .equipe-nome {
@@ -164,42 +202,212 @@
   font-size: 15px;
 }
 
-.equipe-categoria {
-  display: inline-block;
-  width: fit-content;
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.7);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 6px;
+/* grupo de botões de ação (editar / selecionar / excluir) */
+
+.equipe-card-acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
+/* botão quadrado só com ícone — usado no "editar equipe" e na
+   confirmação/cancelamento da edição inline */
+
+.btn-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-icone:hover { background: rgba(255,255,255,0.08); }
+.btn-icone:disabled { opacity: 0.6; cursor: default; }
+
+.btn-icone--editar {
+  border-color: rgba(45,127,255,0.4);
+}
+.btn-icone--editar:hover { background: rgba(45,127,255,0.12); }
+
+.btn-icone--salvar {
+  border-color: rgba(45,200,120,0.4);
+}
+.btn-icone--salvar:hover { background: rgba(45,200,120,0.12); }
+
+.btn-icone--cancelar {
+  border-color: rgba(255,107,122,0.4);
+}
+.btn-icone--cancelar:hover { background: rgba(255,107,122,0.12); }
+
+/* — ícone dentro do botão "editar equipe" (lápis) —
+   classe pra usar no seu ícone: .icone-editar-equipe */
+/* ícones "mascarados" — em vez de <img>, usamos o PNG (branco) como
+   máscara de recorte e pintamos com background-color. Assim o ícone
+   fica sempre na cor do botão/container em que está, em vez do
+   branco original do arquivo */
+.icone-mascarado {
+  display: inline-block;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.icone-editar-equipe {
+  width: 15px;
+  height: 15px;
+  background-color: #4d9fff; /* mesma cor do botão "editar" (azul) */
+}
+
+/* — ícone dentro do botão "salvar" da edição inline (check/disquete) —
+   classe: .icone-salvar-edicao */
+.icone-salvar-edicao {
+  width: 15px;
+  height: 15px;
+  background-color: #6fe3a3; /* mesma cor do botão "salvar" (verde) */
+}
+
+/* — ícone dentro do botão "cancelar" da edição inline (x) —
+   classe: .icone-cancelar-edicao */
+.icone-cancelar-edicao {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+}
+
+/* botão "Selecionar" */
+
 .btn-selecionar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   background: transparent;
   border: 1px solid rgba(45,127,255,0.4);
   color: #4d9fff;
   border-radius: 8px;
-  padding: 7px 14px;
+  padding: 6px 11px;
   font-family: inherit;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-selecionar:hover { background: rgba(45,127,255,0.1); }
+
+/* quando é a equipe já selecionada, o botão fica "preenchido" —
+   continua clicável, mas indica visualmente qual é a atual */
+.btn-selecionar--ativa {
+  background: linear-gradient(135deg, #0e4385, #0062ff);
+  border-color: transparent;
+  color: #fff;
+}
+.btn-selecionar--ativa:hover { opacity: 0.9; background: linear-gradient(135deg, #0e4385, #0062ff); }
+
+/* — ícone dentro do botão "Selecionar" — classe: .icone-selecionar */
+.icone-selecionar {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
 }
 
-.equipe-selecionada {
-  color: #6fe3a3;
+/* botão "Excluir" */
+
+.btn-excluir {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid rgba(255,107,122,0.4);
+  color: #ff6b7a;
+  border-radius: 8px;
+  padding: 6px 11px;
+  font-family: inherit;
   font-size: 12px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  cursor: pointer;
   white-space: nowrap;
+  transition: background 0.2s;
+}
+.btn-excluir:hover { background: rgba(255,107,122,0.1); }
+.btn-excluir:disabled { opacity: 0.6; cursor: default; }
+
+/* — ícone dentro do botão "Excluir" (lixeira) — classe: .icone-excluir */
+.icone-excluir {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
 }
 
-/* atalhos pra gerenciar a equipe selecionada */
+/* mensagem de "equipe selecionada" — substitui o antigo selo/badge
+   redondo por um aviso em texto, exibido abaixo das ações do card */
+
+.equipe-selecionada-aviso {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(45,127,255,0.25);
+  color: #4d9fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* — ícone de check da mensagem de "equipe selecionada" —
+   classe: .icone-check-selecionada */
+.icone-check-selecionada {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* edição inline do nome da equipe */
+
+.equipe-edicao-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.equipe-edicao-input {
+  flex: 1;
+  min-width: 140px;
+  background: #060d1c;
+  border: 1px solid rgba(77,159,255,0.5);
+  border-radius: 8px;
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: inherit;
+}
+.equipe-edicao-input:focus { outline: none; border-color: #4d9fff; }
+
+.equipe-edicao-acoes {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════
+   GERENCIAR EQUIPE SELECIONADA
+════════════════════════════════ */
 
 .equipes-gerenciar {
   margin-top: 8px;
@@ -224,17 +432,41 @@
   flex-wrap: wrap;
 }
 
-.equipes-gerenciar-links a {
-  background: rgba(255,255,255,0.06);
+.equipes-gerenciar-item {
+  flex: 1;
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.12);
   color: #fff;
   text-decoration: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
+  padding: 16px 10px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  transition: background 0.2s, border-color 0.2s;
 }
-.equipes-gerenciar-links a:hover { background: rgba(45,127,255,0.12); }
+.equipes-gerenciar-item:hover {
+  background: rgba(45,127,255,0.1);
+  border-color: rgba(45,127,255,0.3);
+}
+
+/* — ícones dos atalhos "Atletas" / "Jogos" / "Scout ao vivo" —
+   classes: .icone-atletas-gerenciar / .icone-jogos-gerenciar / .icone-scout-vivo-gerenciar */
+.icone-atletas-gerenciar,
+.icone-jogos-gerenciar,
+.icone-scout-vivo-gerenciar {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
 
 /* rodapé — mesmo padrão das outras telas */
 
@@ -269,3 +501,29 @@
 .botao-inicio:hover { background: rgba(45,127,255,0.25); }
 
 .icone-casa { width: 18px; height: 18px; stroke: #4d9fff; }
+
+/* ════════════════════════════════
+   MOBILE — evita que os 3 botões de ação espremam ao lado do nome
+════════════════════════════════ */
+
+@media (max-width: 480px) {
+  .equipe-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .equipe-card-acoes {
+    width: 100%;
+  }
+
+  /* mantém os botões no tamanho natural (compacto), sem esticar
+     para ocupar a linha inteira */
+  .btn-selecionar,
+  .btn-excluir {
+    flex: 0 0 auto;
+  }
+
+  .equipe-selecionada-aviso {
+    font-size: 11px;
+  }
+}
