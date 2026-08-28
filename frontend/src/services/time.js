@@ -64,6 +64,12 @@ export async function atualizarTime(id, payload) {
   return resposta.time;
 }
 
+// DELETE /api/times/:id
+export async function deletarTime(id) {
+  await apiRequest(`/times/${id}`, { method: 'DELETE' });
+  invalidarCache('times');
+}
+
 // GET /api/players?team_id=... -> array de jogadores do time
 export async function listarJogadores(teamId) {
   if (!teamId) return [];

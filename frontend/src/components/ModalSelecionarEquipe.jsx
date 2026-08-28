@@ -28,10 +28,13 @@ export default function ModalSelecionarEquipe() {
         const lista = await listarTimes();
         if (!ativo) return;
 
-        setTimes(lista || []);
+        // times criados automaticamente como adversário (ver services/time.js)
+        // não são equipes reais do técnico — não entram nas opções aqui
+        const listaFiltrada = (lista || []).filter(t => t.category !== 'Adversário');
+        setTimes(listaFiltrada);
 
         const salvo = getTimeSelecionado();
-        const aindaExiste = salvo && lista?.some(t => t.id === salvo.id);
+        const aindaExiste = salvo && listaFiltrada.some(t => t.id === salvo.id);
 
         if (!aindaExiste) setVisivel(true);
       } catch {

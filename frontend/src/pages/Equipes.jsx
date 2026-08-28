@@ -66,7 +66,9 @@ export default function Equipes() {
     setErro('');
     try {
       const lista = await listarTimes();
-      setTimes(lista || []);
+      // times criados automaticamente como adversário (ver services/time.js)
+      // não são equipes que o técnico gerencia — não aparecem aqui
+      setTimes((lista || []).filter(t => t.category !== 'Adversário'));
     } catch (err) {
       setErro(err.message || 'Erro ao carregar equipes');
     } finally {

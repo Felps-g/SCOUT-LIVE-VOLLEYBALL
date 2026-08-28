@@ -17,18 +17,21 @@ export default function SeletorTime({ onChange }) {
     setErro('');
     try {
       const lista = await listarTimes();
-      setTimes(lista || []);
+      // times criados automaticamente como adversário (ver services/time.js)
+      // não são times do técnico — não entram nas opções de seleção
+      const listaFiltrada = (lista || []).filter(t => t.category !== 'Adversário');
+      setTimes(listaFiltrada);
 
       const salvo = getTimeSelecionado();
-      const aindaExiste = salvo && lista?.some(t => t.id === salvo.id);
+      const aindaExiste = salvo && listaFiltrada.some(t => t.id === salvo.id);
 
       if (aindaExiste) {
         setSelecionadoId(salvo.id);
         onChange?.(salvo);
-      } else if (lista?.length > 0) {
-        setTimeSelecionado(lista[0]);
-        setSelecionadoId(lista[0].id);
-        onChange?.(lista[0]);
+      } else if (listaFiltrada.length > 0) {
+        setTimeSelecionado(listaFiltrada[0]);
+        setSelecionadoId(listaFiltrada[0].id);
+        onChange?.(listaFiltrada[0]);
       } else {
         onChange?.(null);
       }
