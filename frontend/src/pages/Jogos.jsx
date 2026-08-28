@@ -1,29 +1,14 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import '../../css/jogos.css';
 import lupaImg from '../assets/IMG/lupa.png';
 import casaImg from '../assets/IMG/casa.png';
 import { apiRequest } from '../services/api.js';
-import { getTimeSelecionado, listarTimes } from '../services/time.js';
+import { listarTimes } from '../services/time.js';
 
 function formatarData(isoDate) {
   if (!isoDate) return '—';
   const [ano, mes, dia] = isoDate.split('T')[0].split('-');
   return `${dia}/${mes}/${ano}`;
-}
-
-// spinner central exibido enquanto os jogos ainda não chegaram da API
-function CarregandoJogos() {
-  return (
-    <div className="carregando-jogos">
-      <motion.div
-        className="spinner"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
-      />
-      <span className="carregando-texto">Carregando jogos…</span>
-    </div>
-  );
 }
 
 export default function Jogos() {
@@ -124,20 +109,7 @@ export default function Jogos() {
           <span>Resultado</span>
         </div>
 
-        <AnimatePresence mode="wait">
-          {carregando && (
-            <motion.div
-              key="carregando"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <CarregandoJogos />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
+        {carregando && <p style={{ color: '#fff', opacity: 0.7, padding: '0 16px' }}>Carregando jogos…</p>}
         {erro && <p style={{ color: '#ff6b7a', padding: '0 16px' }}>{erro}</p>}
         {!carregando && !erro && jogosFiltrados.length === 0 && (
           <p style={{ color: '#fff', opacity: 0.7, padding: '0 16px' }}>Nenhum jogo salvo ainda.</p>
