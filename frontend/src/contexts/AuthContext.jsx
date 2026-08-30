@@ -16,7 +16,7 @@
 // limpa a sessão e redireciona pro login com a mensagem certa, sem
 // precisar passar pelo contexto pra isso.
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { getAuthToken } from '../services/api.js';
 import { salvarUsuarioLogado, limparSessao, buscarPerfilAtual } from '../services/auth.js';
 
@@ -65,8 +65,29 @@ export function AuthProvider({ children }) {
     window.location.hash = '#/login';
   }, []);
 
+  // diferente de login(): só atualiza os dados do perfil (ex: depois de
+  // editar o nome), sem mexer no estado da sessão. Usado por Perfil.jsx
+  // pra manter o contexto em sincronia sem precisar buscar tudo de novo.
+  const atualizarUsuario = useCallback((dadosAtualizados) => {
+    setUsuario(prev => {
+      const atualizado = { ...prev, ...dadosAtualizados };
+      salvarUsuarioLogado(atualizado);
+      return atualizado;
+    });
+  }, []);
+
+  // sem isso, toda vez que o App re-renderiza (o que acontece a cada
+  // navegação, já que o hash da URL vive lá) o objeto do value era
+  // recriado do zero — e todo componente que usa useAuth() (PrivateRoute,
+  // Perfil, Login, Inicial) re-renderizava junto, mesmo sem nada ter
+  // mudado de verdade no estado de autenticação.
+  const value = useMemo(
+    () => ({ estado, usuario, login, logout, atualizarUsuario }),
+    [estado, usuario, login, logout, atualizarUsuario]
+  );
+
   return (
-    <AuthContext.Provider value={{ estado, usuario, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

@@ -9,28 +9,20 @@ import olhoImg from '../assets/IMG/olho.png';
 import olhoFechadoImg from '../assets/IMG/olho-fechado.png';
 import casaImg from '../assets/IMG/casa.png';
 import { apiRequest } from '../services/api.js';
-import { estaLogado, buscarPerfilAtual, limparSessao } from '../services/auth.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
 
 export default function Perfil() {
-  const { logout } = useAuth();
+  const { usuario, logout, atualizarUsuario } = useAuth();
 
   // guarda a instância do cropper pra poder destruir quando fechar
   const cropperRef = useRef(null);
-
-  // controla se tem alguém logado; começa com o que já está salvo localmente
-  // e é confirmado (ou desfeito) buscando o perfil real no backend
-  const [logado, setLogado] = useState(estaLogado());
-  const [carregandoPerfil, setCarregandoPerfil] = useState(true);
 
   const [fotoSrc, setFotoSrc]             = useState('');
   const [modalCropAberto, setModalCropAberto] = useState(false);
   const [imagemCropSrc, setImagemCropSrc]   = useState('');
   const [modalEditarAberto, setModalEditarAberto] = useState(false);
 
-  const [perfilNome, setPerfilNome]   = useState('');
-  const [valorEmail, setValorEmail]   = useState('');
-  const [valorCpf,   setValorCpf]     = useState('Não informado');
+  const [valorCpf, setValorCpf] = useState('Não informado');
 
   const [editNome,  setEditNome]  = useState('');
   const [editEmail, setEditEmail] = useState('');
@@ -42,31 +34,13 @@ export default function Perfil() {
   const inputFotoRef  = useRef(null);
   const imagemCropRef = useRef(null);
 
-  // CARREGAR DADOS DO TÉCNICO LOGADO
-  // se não tiver ninguém logado, nem tenta buscar — a tela mostra o aviso de login.
-  // se tiver, busca os dados reais no backend (fonte da verdade, não só o cache local).
-  useEffect(() => {
-    if (!estaLogado()) {
-      setLogado(false);
-      setCarregandoPerfil(false);
-      return;
-    }
-
-    (async () => {
-      try {
-        const usuario = await buscarPerfilAtual();
-        setPerfilNome(usuario.nome || usuario.email || '');
-        setValorEmail(usuario.email || '');
-        setLogado(true);
-      } catch (err) {
-        // token expirado ou inválido: trata como deslogado
-        limparSessao();
-        setLogado(false);
-      } finally {
-        setCarregandoPerfil(false);
-      }
-    })();
-  }, []);
+  // Nome/email vêm do AuthContext (já buscados uma vez quando o app abriu
+  // — ver contexts/AuthContext.jsx). Perfil.jsx só existe dentro de
+  // <PrivateRoute>, então quando chega aqui a sessão já está confirmada;
+  // buscar de novo seria uma segunda chamada a /auth/profile pra pegar
+  // exatamente o mesmo dado que o contexto já tem.
+  const perfilNome  = usuario?.nome || '';
+  const valorEmail = usuario?.email || '';
 
   // FOTO DE PERFIL
   // o botão de editar foto aciona o input de arquivo escondido
@@ -185,11 +159,8 @@ export default function Perfil() {
         body: { nome: editNome.trim() }
       });
 
-      // mantém os dados locais em sincronia com o que acabou de ser salvo
-      const usuarioAtualizado = await buscarPerfilAtual();
-
-      setPerfilNome(usuarioAtualizado.nome || editNome.trim());
-      setValorEmail(usuarioAtualizado.email || editEmail.trim());
+      // atualiza o nome já confirmado, sem precisar buscar o perfil de novo
+      atualizarUsuario({ nome: editNome.trim() });
       if (editCpf) setValorCpf(editCpf);
 
       fecharModalEditar();
@@ -220,40 +191,6 @@ export default function Perfil() {
   // SAIR DA CONTA
   function handleSair() {
     logout();
-  }
-
-  // enquanto verifica se tem sessão ativa, não mostra nada pra evitar
-  // o "flash" do aviso de login antes dos dados carregarem
-  if (carregandoPerfil) {
-    return <div className="pagina-app"></div>;
-  }
-
-  // sem sessão ativa: mostra aviso pedindo login em vez de qualquer dado da conta
-  if (!logado) {
-    return (
-      <div className="pagina-app">
-        <main className="perfil-conteudo perfil-conteudo--vazio">
-          <div className="perfil-login-aviso">
-            <div className="perfil-login-icone">
-              <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </div>
-            <h1 className="perfil-login-titulo">Você não está logado</h1>
-            <p className="perfil-login-texto">Faça login para ver e editar as informações da sua conta.</p>
-            <a href="#/login" className="perfil-login-botao">Fazer login</a>
-          </div>
-        </main>
-
-        <footer className="rodape">
-          <a href="#/" className="botao-inicio">
-            <img src={casaImg} className="icone-casa" />
-            Início
-          </a>
-        </footer>
-      </div>
-    );
   }
 
   return (
