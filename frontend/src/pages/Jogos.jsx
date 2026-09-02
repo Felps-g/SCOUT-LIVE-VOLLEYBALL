@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import '../../css/jogos.css';
+import '../../css/ui-estados.css';
 import lupaImg from '../assets/IMG/lupa.png';
 import casaImg from '../assets/IMG/casa.png';
 import { apiRequest } from '../services/api.js';
 import { listarTimes } from '../services/time.js';
+import Carregando from '../components/ui/Carregando.jsx';
+import MensagemErro from '../components/ui/MensagemErro.jsx';
+import EstadoVazio from '../components/ui/EstadoVazio.jsx';
 
 function formatarData(isoDate) {
   if (!isoDate) return '—';
@@ -109,10 +113,12 @@ export default function Jogos() {
           <span>Resultado</span>
         </div>
 
-        {carregando && <p style={{ color: '#fff', opacity: 0.7, padding: '0 16px' }}>Carregando jogos…</p>}
-        {erro && <p style={{ color: '#ff6b7a', padding: '0 16px' }}>{erro}</p>}
+        {carregando && <div style={{ padding: '0 16px' }}><Carregando texto="Carregando jogos…" /></div>}
+        <div style={{ padding: '0 16px' }}>
+          <MensagemErro mensagem={erro} aoTentarNovamente={carregar} />
+        </div>
         {!carregando && !erro && jogosFiltrados.length === 0 && (
-          <p style={{ color: '#fff', opacity: 0.7, padding: '0 16px' }}>Nenhum jogo salvo ainda.</p>
+          <div style={{ padding: '0 16px' }}><EstadoVazio texto="Nenhum jogo salvo ainda." /></div>
         )}
 
         {jogosFiltrados.map(jogo => (

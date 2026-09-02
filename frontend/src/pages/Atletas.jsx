@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../../css/atletas.css';
+import '../../css/ui-estados.css';
 import maisImg from '../assets/IMG/mais.png';
 import lupaImg from '../assets/IMG/lupa.png';
 import casaImg from '../assets/IMG/casa.png';
 import { listarTimes, listarJogadores, getTimeSelecionado, setTimeSelecionado } from '../services/time.js';
+import MensagemErro from '../components/ui/MensagemErro.jsx';
+import EstadoVazio from '../components/ui/EstadoVazio.jsx';
 
 // spinner central exibido enquanto os atletas ainda não chegaram da API
 function CarregandoAtletas() {
@@ -87,9 +90,10 @@ export default function Atletas() {
       <main className="atletas-conteudo">
 
         {!carregando && !timeAtual && (
-          <p style={{ color: '#fff', opacity: 0.7 }}>
-            Você ainda não tem uma equipe. <a href="#/app/equipes" style={{ color: '#4d9fff' }}>Crie a sua equipe</a> antes de cadastrar atletas.
-          </p>
+          <EstadoVazio
+            texto="Você ainda não tem uma equipe."
+            acao={{ href: '#/app/equipes', texto: 'Crie a sua equipe' }}
+          />
         )}
 
         <div className="atletas-barra">
@@ -122,9 +126,9 @@ export default function Atletas() {
             </motion.div>
           )}
         </AnimatePresence>
-        {erro && <p style={{ color: '#ff6b7a' }}>{erro}</p>}
+        <MensagemErro mensagem={erro} aoTentarNovamente={() => carregarAtletas(timeAtual)} />
         {!carregando && !erro && timeAtual && atletasFiltrados.length === 0 && (
-          <p style={{ color: '#fff', opacity: 0.7 }}>Nenhum atleta cadastrado neste time ainda.</p>
+          <EstadoVazio texto="Nenhum atleta cadastrado neste time ainda." />
         )}
 
         <div className="atletas-grade">

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import '../../css/detalhe-jogos.css';
+import '../../css/ui-estados.css';
 import Chart from 'chart.js/auto';
 import jsPDF from 'jspdf';
 import lixeiraImg from '../assets/IMG/lixeira.png';
@@ -7,6 +8,8 @@ import voltarImg from '../assets/IMG/voltar.png';
 import relatorioImg from '../assets/IMG/relatorio.png'; // adicionar este arquivo em src/assets/IMG
 import { apiRequest } from '../services/api.js';
 import { listarTimes, listarJogadores } from '../services/time.js';
+import Carregando from '../components/ui/Carregando.jsx';
+import MensagemErro from '../components/ui/MensagemErro.jsx';
 import {
   formatarData, aproveitamento, calcularEvolucaoSets, calcularFundamentos,
   calcularFundamentosNaoPontuam, calcularDesempenhoPosicao, calcularRanking,
@@ -324,7 +327,7 @@ export default function DetalheJogo() {
       <div className="pagina-app">
         <div className="titulo-wrapper"><h1 className="titulo-pagina">Jogos</h1></div>
         <main className="conteudo">
-          <p style={{ color: '#fff', opacity: 0.7 }}>Carregando jogo…</p>
+          <Carregando texto="Carregando jogo…" />
         </main>
       </div>
     );
@@ -335,7 +338,7 @@ export default function DetalheJogo() {
       <div className="pagina-app">
         <div className="titulo-wrapper"><h1 className="titulo-pagina">Jogos</h1></div>
         <main className="conteudo">
-          <p style={{ color: '#ff6b7a' }}>{erro || 'Jogo não encontrado.'}</p>
+          <MensagemErro mensagem={erro || 'Este jogo não existe ou foi removido.'} />
         </main>
         <footer className="rodape">
           <a href="#/app/jogos" className="botao-voltar">

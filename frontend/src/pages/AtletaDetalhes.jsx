@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import '../../css/atleta-detalhes.css';
 import '../../css/adicionar-atletas.css';
+import '../../css/ui-estados.css';
 import lixeiraImg from '../assets/IMG/lixeira.png';
 import voltarImg from '../assets/IMG/voltar.png';
 import cameraImg from '../assets/IMG/camera.png';
 import salvarImg from '../assets/IMG/salvar.png';
 import perfilImg from '../assets/IMG/perfil.png';
 import { buscarJogador, atualizarJogador, excluirJogador } from '../services/time.js';
+import Carregando from '../components/ui/Carregando.jsx';
+import MensagemErro from '../components/ui/MensagemErro.jsx';
 
 export default function AtletaDetalhes() {
   // com hash routing o query string fica dentro do hash: #/app/atletas/detalhes?id=123
@@ -161,7 +164,7 @@ export default function AtletaDetalhes() {
       <div className="pagina-app">
         <div className="atletas-titulo-wrapper"><h1 className="atletas-titulo">Atletas</h1></div>
         <main className="atletas-conteudo">
-          <p style={{ color: '#fff', opacity: 0.7 }}>Carregando atleta…</p>
+          <Carregando texto="Carregando atleta…" />
         </main>
       </div>
     );
@@ -172,7 +175,7 @@ export default function AtletaDetalhes() {
       <div className="pagina-app">
         <div className="atletas-titulo-wrapper"><h1 className="atletas-titulo">Atletas</h1></div>
         <main className="atletas-conteudo">
-          <p style={{ color: '#ff6b7a' }}>{erro || 'Atleta não encontrado.'}</p>
+          <MensagemErro mensagem={erro || 'Este atleta não existe ou foi removido.'} />
         </main>
         <footer className="rodape">
           <a href="#/app/atletas" className="botao-inicio">

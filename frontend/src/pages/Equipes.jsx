@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../../css/equipes.css';
+import '../../css/ui-estados.css';
 import maisImg from '../assets/IMG/mais.png';
 import casaImg from '../assets/IMG/casa.png';
 import cancelarImg from '../assets/IMG/cancelar.png';
@@ -10,6 +11,8 @@ import atletasImg from '../assets/IMG/atletas.png';
 import salvarImg from '../assets/IMG/salvar.png';
 import lixeiraImg from '../assets/IMG/lixeira.png';
 import editarImg from '../assets/IMG/editar.png';
+import MensagemErro from '../components/ui/MensagemErro.jsx';
+import EstadoVazio from '../components/ui/EstadoVazio.jsx';
 import {
   listarTimes,
   criarTime,
@@ -237,11 +240,9 @@ export default function Equipes() {
             </motion.div>
           )}
         </AnimatePresence>
-        {erro && <p style={{ color: '#ff6b7a' }}>{erro}</p>}
+        <MensagemErro mensagem={erro} aoTentarNovamente={carregar} />
         {!carregando && !erro && times.length === 0 && !formAberto && (
-          <p style={{ color: '#fff', opacity: 0.7 }}>
-            Você ainda não tem nenhuma equipe. Crie a primeira para começar a cadastrar atletas e jogos.
-          </p>
+          <EstadoVazio texto="Você ainda não tem nenhuma equipe. Crie a primeira para começar a cadastrar atletas e jogos." />
         )}
 
         <div className="equipes-lista">
