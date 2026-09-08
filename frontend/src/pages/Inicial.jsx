@@ -1,5 +1,5 @@
 import '../../css/inicial.css';
-import hipicaImg from '../assets/IMG/hipica.png';
+import scoutlogoImg from '../assets/IMG/scoutlogo.png';
 import perfil1Img from '../assets/IMG/perfil1.png';
 import bolaImg from '../assets/IMG/bola.png';
 import atletasImg from '../assets/IMG/atletas.png';
@@ -32,7 +32,7 @@ export default function Inicial() {
 
       <header className="cabecalho">
         <a href="#/" className="logo-equipe">
-          <img src={hipicaImg} alt="Logo da equipe" className="logo-equipe-img" />
+          <img src={scoutlogoImg} alt="Logo da equipe" className="logo-equipe-img" />
         </a>
 
         <h1 className="logo">SCOUT LIVE</h1>

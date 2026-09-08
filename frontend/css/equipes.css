@@ -28,10 +28,6 @@
   padding: 20px 24px;
   overflow-y: auto;
   min-height: 0;
-  width: 100%;
-  max-width: 760px;
-  margin: 0 auto;
-  box-sizing: border-box;
 }
 
 /* botão "criar equipe" */
@@ -74,31 +70,6 @@
 .equipes-erro--inline {
   display: block;
   margin-top: -4px;
-}
-
-/* spinner de carregamento (framer-motion) */
-
-.carregando-jogos {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  padding: 50px 16px;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.12);
-  border-top-color: #2d7fff;
-}
-
-.carregando-texto {
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.55);
 }
 
 /* formulário de criação */
@@ -247,32 +218,18 @@
 
 /* — ícone dentro do botão "editar equipe" (lápis) —
    classe pra usar no seu ícone: .icone-editar-equipe */
-/* ícones "mascarados" — em vez de <img>, usamos o PNG (branco) como
-   máscara de recorte e pintamos com background-color. Assim o ícone
-   fica sempre na cor do botão/container em que está, em vez do
-   branco original do arquivo */
-.icone-mascarado {
-  display: inline-block;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-}
-
 .icone-editar-equipe {
+  display: inline-block;
   width: 15px;
   height: 15px;
-  background-color: #4d9fff; /* mesma cor do botão "editar" (azul) */
 }
 
 /* — ícone dentro do botão "salvar" da edição inline (check/disquete) —
    classe: .icone-salvar-edicao */
 .icone-salvar-edicao {
+  display: inline-block;
   width: 15px;
   height: 15px;
-  background-color: #6fe3a3; /* mesma cor do botão "salvar" (verde) */
 }
 
 /* — ícone dentro do botão "cancelar" da edição inline (x) —
@@ -281,7 +238,6 @@
   display: inline-block;
   width: 15px;
   height: 15px;
-  object-fit: contain;
 }
 
 /* botão "Selecionar" */
@@ -294,7 +250,7 @@
   border: 1px solid rgba(45,127,255,0.4);
   color: #4d9fff;
   border-radius: 8px;
-  padding: 6px 11px;
+  padding: 7px 14px;
   font-family: inherit;
   font-size: 12px;
   font-weight: 700;
@@ -318,7 +274,6 @@
   display: inline-block;
   width: 14px;
   height: 14px;
-  object-fit: contain;
 }
 
 /* botão "Excluir" */
@@ -331,7 +286,7 @@
   border: 1px solid rgba(255,107,122,0.4);
   color: #ff6b7a;
   border-radius: 8px;
-  padding: 6px 11px;
+  padding: 7px 14px;
   font-family: inherit;
   font-size: 12px;
   font-weight: 700;
@@ -347,33 +302,31 @@
   display: inline-block;
   width: 14px;
   height: 14px;
-  object-fit: contain;
 }
 
-/* mensagem de "equipe selecionada" — substitui o antigo selo/badge
-   redondo por um aviso em texto, exibido abaixo das ações do card */
+/* selo de "equipe selecionada" — círculo que fica sobre a borda
+   direita do card, como um crachá */
 
-.equipe-selecionada-aviso {
-  width: 100%;
+.equipe-check-badge {
+  position: absolute;
+  top: 50%;
+  right: -8px;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #2d7fff;
+  border: 2px solid #050d1f;
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 2px;
-  padding-top: 8px;
-  border-top: 1px dashed rgba(45,127,255,0.25);
-  color: #4d9fff;
-  font-size: 12px;
-  font-weight: 700;
+  justify-content: center;
 }
 
-/* — ícone de check da mensagem de "equipe selecionada" —
-   classe: .icone-check-selecionada */
+/* — ícone de check dentro do selo — classe: .icone-check-selecionada */
 .icone-check-selecionada {
   display: inline-block;
-  width: 13px;
-  height: 13px;
-  object-fit: contain;
-  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
 }
 
 /* edição inline do nome da equipe */
@@ -464,8 +417,6 @@
   display: inline-block;
   width: 22px;
   height: 22px;
-  object-fit: contain;
-  flex-shrink: 0;
 }
 
 /* rodapé — mesmo padrão das outras telas */
@@ -516,14 +467,104 @@
     width: 100%;
   }
 
-  /* mantém os botões no tamanho natural (compacto), sem esticar
-     para ocupar a linha inteira */
   .btn-selecionar,
   .btn-excluir {
-    flex: 0 0 auto;
+    flex: 1;
+    justify-content: center;
   }
 
-  .equipe-selecionada-aviso {
-    font-size: 11px;
+  .equipe-check-badge {
+    top: -8px;
+    right: 12px;
+    transform: none;
   }
+}
+
+/* ===== Regras adicionais mantidas do fork do Felipe (funcionalidades novas) ===== */
+
+
+
+/* spinner de carregamento (framer-motion) */
+
+.carregando-jogos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 50px 16px;
+}
+
+
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.12);
+  border-top-color: #2d7fff;
+}
+
+
+
+.carregando-texto {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
+}
+
+
+
+/* — ícone dentro do botão "editar equipe" (lápis) —
+   classe pra usar no seu ícone: .icone-editar-equipe */
+/* ícones "mascarados" — em vez de <img>, usamos o PNG (branco) como
+   máscara de recorte e pintamos com background-color. Assim o ícone
+   fica sempre na cor do botão/container em que está, em vez do
+   branco original do arquivo */
+.icone-mascarado {
+  display: inline-block;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+
+
+.icone-editar-equipe {
+  width: 15px;
+  height: 15px;
+  background-color: #4d9fff; /* mesma cor do botão "editar" (azul) */
+}
+
+
+
+/* mensagem de "equipe selecionada" — substitui o antigo selo/badge
+   redondo por um aviso em texto, exibido abaixo das ações do card */
+
+.equipe-selecionada-aviso {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(45,127,255,0.25);
+  color: #4d9fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+
+/* — ícone de check da mensagem de "equipe selecionada" —
+   classe: .icone-check-selecionada */
+.icone-check-selecionada {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+  flex-shrink: 0;
 }

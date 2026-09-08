@@ -270,6 +270,10 @@
 
   .rodape { padding: 8px 14px; }
 }
+
+/* ===== Regras adicionais mantidas do fork do Felipe (funcionalidades novas) ===== */
+
+
 /* spinner de carregamento (framer-motion) */
 
 .carregando-jogos {
@@ -281,6 +285,8 @@
   padding: 50px 16px;
 }
 
+
+
 .spinner {
   width: 40px;
   height: 40px;
@@ -288,6 +294,8 @@
   border: 3px solid rgba(255,255,255,0.12);
   border-top-color: #2d7fff;
 }
+
+
 
 .carregando-texto {
   font-size: 13px;
