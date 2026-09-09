@@ -25,36 +25,24 @@ button { font-family: inherit; }
 
 .header {
   flex-shrink: 0;
-  height: 64px;
+  height: 84px;
   background: #07101f;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 20px;
 }
 
-.titulo {
-  display: flex;
-  align-items: baseline;
-  gap: 7px;
-  white-space: nowrap;
-}
-
-.t-scout {
-  font-size: 1.1rem;
-  font-weight: 800;
-  letter-spacing: 5px;
+.titulo-simples {
+  font-family: 'Nexa', Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 3px;
   color: #fff;
   text-transform: uppercase;
-}
-
-.t-live {
-  font-size: 0.63rem;
-  font-weight: 800;
-  letter-spacing: 3px;
-  color: #4d9fff;
-  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
 }
 
 
@@ -75,7 +63,7 @@ button { font-family: inherit; }
 .escalacao-content {
   width: 100%;
   max-width: 640px;
-  padding: 28px 24px 40px;
+  padding: 28px 24px calc(56px + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
 }
@@ -258,6 +246,7 @@ button { font-family: inherit; }
   border: none;
   border-radius: 14px;
   padding: 16px;
+  margin-top: 20px;
   color: #fff;
   font-size: 0.95rem;
   font-weight: 800;
@@ -1138,6 +1127,55 @@ button { font-family: inherit; }
   margin-top: 2px;
 }
 
+.resultado-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.resultado-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 13px;
+  color: rgba(255,255,255,0.55);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.1s;
+}
+
+.resultado-btn:active { transform: scale(0.97); }
+
+.resultado-btn--vitoria:hover {
+  background: rgba(46,204,113,0.14);
+  border-color: rgba(46,204,113,0.35);
+  color: #2ecc71;
+}
+
+.resultado-btn--derrota:hover {
+  background: rgba(232,39,58,0.12);
+  border-color: rgba(232,39,58,0.35);
+  color: #ff5566;
+}
+
+.resultado-btn--vitoria.sel {
+  background: rgba(46,204,113,0.16);
+  border-color: #2ecc71;
+  color: #2ecc71;
+}
+
+.resultado-btn--derrota.sel {
+  background: rgba(232,39,58,0.14);
+  border-color: #e8273a;
+  color: #ff5566;
+}
+
 .modal-acoes {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1236,11 +1274,10 @@ button { font-family: inherit; }
 
 @media (max-width: 600px) {
 
-  .header { height: 56px; }
-  .t-scout { font-size: 0.95rem; letter-spacing: 3px; }
-  .t-live  { font-size: 0.58rem; }
+  .header { height: 72px; }
+  .titulo-simples { font-size: 16px; letter-spacing: 2px; }
 
-  .escalacao-content { padding: 20px 16px 32px; }
+  .escalacao-content { padding: 20px 16px calc(48px + env(safe-area-inset-bottom, 0px)); }
   .escalacao-titulo { font-size: 1.25rem; }
   .escalacao-sub { font-size: 0.82rem; }
 

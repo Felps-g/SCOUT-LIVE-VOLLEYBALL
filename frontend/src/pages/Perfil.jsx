@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import '../../css/perfil.css';
+import MenuHamburguer from '../components/MenuHamburguer.jsx';
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
 import editarfotoImg from '../assets/IMG/editarfoto.png';
@@ -7,7 +8,6 @@ import sairImg from '../assets/IMG/sair.png';
 import editarImg from '../assets/IMG/editar.png';
 import olhoImg from '../assets/IMG/olho.png';
 import olhoFechadoImg from '../assets/IMG/olho-fechado.png';
-import casaImg from '../assets/IMG/casa.png';
 import { apiRequest } from '../services/api.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
 
@@ -195,9 +195,11 @@ export default function Perfil() {
 
   return (
     <div className="pagina-app">
-      <main className="perfil-conteudo">
-
+      <MenuHamburguer />
+      <header className="perfil-header">
         <h1 className="perfil-titulo">Perfil</h1>
+      </header>
+      <main className="perfil-conteudo">
 
         <div className="perfil-layout">
 
@@ -261,12 +263,7 @@ export default function Perfil() {
 
       </main>
 
-      <footer className="rodape">
-        <a href="#/" className="botao-inicio">
-          <img src={casaImg} className="icone-casa" />
-          Início
-        </a>
-      </footer>
+
 
       {/* modal de editar informações */}
       <div

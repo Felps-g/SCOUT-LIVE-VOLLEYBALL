@@ -8,14 +8,24 @@
   min-height: 0;
 }
 
+.perfil-header {
+  flex-shrink: 0;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #07101f;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
 .perfil-titulo {
-  font-size: 2rem;
+  font-family: 'Nexa', Arial, sans-serif;
+  font-size: 20px;
   font-weight: 700;
-  letter-spacing: 5px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   color: #fff;
   text-align: center;
-  flex-shrink: 0;
 }
 
 .perfil-layout {
@@ -262,9 +272,13 @@
     overflow-y: auto;
   }
 
+  .perfil-header {
+    height: 72px;
+  }
+
   .perfil-titulo {
-    font-size: 1.5rem;
-    letter-spacing: 4px;
+    font-size: 16px;
+    letter-spacing: 2px;
   }
 
   .perfil-layout { grid-template-columns: 1fr; }

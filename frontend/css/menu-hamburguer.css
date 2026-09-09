@@ -1,0 +1,96 @@
+/* ═══════════════════════════════════════
+   MENU HAMBÚRGUER — Scout Live
+   Aparece em toda página que não seja a inicial.
+   Ao abrir: voltar ao início, scout live, jogos, equipes, atletas.
+═══════════════════════════════════════ */
+
+.menu-hamburguer {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+}
+
+.menu-hamburguer-botao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 13, 28, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.menu-hamburguer-fundo {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 16, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 998;
+  animation: menuHamburguerFade 0.15s ease;
+}
+
+.menu-hamburguer-painel {
+  position: fixed;
+  top: 70px;
+  right: 16px;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  background: rgba(9, 18, 38, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  animation: menuHamburguerSlide 0.18s ease;
+}
+
+.menu-hamburguer-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+
+.menu-hamburguer-item:hover,
+.menu-hamburguer-item:focus-visible {
+  background: rgba(45, 127, 255, 0.15);
+  color: #fff;
+}
+
+.menu-hamburguer-item--inicio {
+  color: #4d9fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px 10px 0 0;
+  margin-bottom: 4px;
+  padding-bottom: 14px;
+}
+
+@keyframes menuHamburguerFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes menuHamburguerSlide {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+  .menu-hamburguer-painel {
+    width: 200px;
+    right: 12px;
+  }
+  .menu-hamburguer {
+    top: 12px;
+    right: 12px;
+  }
+}

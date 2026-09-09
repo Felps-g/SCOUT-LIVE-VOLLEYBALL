@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../../css/scoutlive.css';
+import MenuHamburguer from '../components/MenuHamburguer.jsx';
 import { apiRequest } from '../services/api.js';
 import { getTimeSelecionado, listarJogadores, listarTimes, criarTime } from '../services/time.js';
 
@@ -37,14 +38,6 @@ const IcX = () => (
        stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18"/>
     <line x1="6" y1="6" x2="18" y2="18"/>
-  </svg>
-);
-
-const IcHome = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-       stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-    <polyline points="9 22 9 12 15 12 15 22"/>
   </svg>
 );
 
@@ -662,13 +655,11 @@ export default function ScoutLive() {
   /* ── RENDER ─────────────────────────────────────────── */
   return (
     <div className="app">
+      <MenuHamburguer />
 
       {/* ── CABEÇALHO ── */}
       <header className="header">
-        <div className="titulo">
-          <span className="t-scout">SCOUT</span>
-          <span className="t-live">LIVE</span>
-        </div>
+        <h1 className="titulo-simples">SCOUT LIVE</h1>
       </header>
 
       {/* ══════════════════════ ESCALAÇÃO ══════════════════════ */}
@@ -840,14 +831,6 @@ export default function ScoutLive() {
           </div>
         </main>
       )}
-
-      {/* ── RODAPÉ ── */}
-      <footer className="footer">
-        <a href="#/" className="btn-inicio">
-          <IcHome />
-          <span>Início</span>
-        </a>
-      </footer>
 
       {/* ══════════════════ MODAL: FUNDAMENTOS DO JOGADOR ══════════════════ */}
       <div className={`overlay${titularAberto ? ' open' : ''}`}

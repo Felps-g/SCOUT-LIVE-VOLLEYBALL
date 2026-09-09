@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import '../../css/jogos.css';
 import '../../css/ui-estados.css';
+import MenuHamburguer from '../components/MenuHamburguer.jsx';
 import lupaImg from '../assets/IMG/lupa.png';
-import casaImg from '../assets/IMG/casa.png';
 import { apiRequest } from '../services/api.js';
 import { listarTimes } from '../services/time.js';
 import Carregando from '../components/ui/Carregando.jsx';
@@ -62,6 +62,7 @@ export default function Jogos() {
 
   return (
     <div className="aplicativo">
+      <MenuHamburguer />
 
       <header className="cabecalho-jogos">
         <div className="cabecalho-espaco"></div>
@@ -143,13 +144,6 @@ export default function Jogos() {
         ))}
 
       </div>
-
-      <nav className="barra-inferior">
-        <a href="#/" className="botao-inicio">
-          <img src={casaImg} className="icone-casa" />
-          Início
-        </a>
-      </nav>
 
     </div>
   );

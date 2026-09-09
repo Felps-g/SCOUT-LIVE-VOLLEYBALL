@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../../css/equipes.css';
 import '../../css/ui-estados.css';
+import MenuHamburguer from '../components/MenuHamburguer.jsx';
 import maisImg from '../assets/IMG/mais.png';
 import casaImg from '../assets/IMG/casa.png';
 import cancelarImg from '../assets/IMG/cancelar.png';
@@ -164,9 +165,9 @@ export default function Equipes() {
 
   return (
     <div className="pagina-app">
+      <MenuHamburguer />
       <div className="atletas-titulo-wrapper">
         <h1 className="atletas-titulo">Equipes</h1>
-        <p className="equipes-subtitulo">Gerencie e organize suas equipes de análise</p>
       </div>
 
       <main className="equipes-conteudo">
@@ -331,7 +332,6 @@ export default function Equipes() {
 
                 {ativa && !editando && (
                   <div className="equipe-selecionada-aviso">
-                    <img src={selecionarImg} className="icone-check-selecionada" alt="" />
                     Equipe selecionada com sucesso
                   </div>
                 )}
@@ -375,12 +375,6 @@ export default function Equipes() {
 
       </main>
 
-      <footer className="rodape">
-        <a href="#/" className="botao-inicio">
-          <img src={casaImg} className="icone-casa" alt="" />
-          Início
-        </a>
-      </footer>
     </div>
   );
 }

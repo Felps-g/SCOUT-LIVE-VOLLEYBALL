@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../../css/atletas.css';
 import '../../css/ui-estados.css';
+import MenuHamburguer from '../components/MenuHamburguer.jsx';
 import maisImg from '../assets/IMG/mais.png';
 import lupaImg from '../assets/IMG/lupa.png';
-import casaImg from '../assets/IMG/casa.png';
 import { listarTimes, listarJogadores, getTimeSelecionado, setTimeSelecionado } from '../services/time.js';
 import MensagemErro from '../components/ui/MensagemErro.jsx';
 import EstadoVazio from '../components/ui/EstadoVazio.jsx';
@@ -83,6 +83,7 @@ export default function Atletas() {
 
   return (
     <div className="pagina-app">
+      <MenuHamburguer />
       <div className="atletas-titulo-wrapper">
         <h1 className="atletas-titulo">Atletas</h1>
       </div>
@@ -150,12 +151,7 @@ export default function Atletas() {
 
       </main>
 
-      <footer className="rodape">
-        <a href="#/" className="botao-inicio">
-          <img src={casaImg} className="icone-casa" />
-          Início
-        </a>
-      </footer>
+
     </div>
   );
 }
