@@ -392,14 +392,14 @@ export default function ScoutLive() {
     if (!aplicavel) {
       return (
         <>
-          <td className="td-vazia">–</td>
+          <td className="td-vazia col-divisor-ae">–</td>
           <td className="td-vazia col-divisor">–</td>
         </>
       );
     }
     return (
       <>
-        <td>
+        <td className="col-divisor-ae">
           <CelulaContador
             valor={contagemSub(titular.id, fundamento, 'acerto')}
             onMais={() => ajustarContagem(titular.id, fundamento, 'acerto', 1)}
@@ -424,11 +424,11 @@ export default function ScoutLive() {
     const aplicavel = fundamentosDaPosicao(titular.posicao).includes('Recepção');
     if (!aplicavel) {
       return RECEPCAO_SUBTIPOS.map(({ chave }) => (
-        <td key={chave} className={`td-vazia${chave === 'erro' ? ' col-divisor' : ''}`}>–</td>
+        <td key={chave} className={`td-vazia${chave === 'erro' ? ' col-divisor' : chave === 'c' ? ' col-divisor-ae' : ''}`}>–</td>
       ));
     }
     return RECEPCAO_SUBTIPOS.map(({ chave }) => (
-      <td key={chave} className={chave === 'erro' ? 'col-divisor' : undefined}>
+      <td key={chave} className={chave === 'erro' ? 'col-divisor' : chave === 'c' ? 'col-divisor-ae' : undefined}>
         <CelulaContador
           valor={contagemSub(titular.id, 'Recepção', chave)}
           onMais={() => ajustarContagem(titular.id, 'Recepção', chave, 1)}

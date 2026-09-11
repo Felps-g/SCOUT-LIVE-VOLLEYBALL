@@ -162,7 +162,12 @@ export default function AtletaDetalhes() {
   if (carregando) {
     return (
       <div className="pagina-app">
-        <div className="atletas-titulo-wrapper"><h1 className="atletas-titulo">Atletas</h1></div>
+        <div className="atletas-titulo-wrapper">
+          <a href="#/app/atletas" className="btn-voltar-topo" aria-label="Voltar">
+            <img src={voltarImg} className="icone-voltar-topo" />
+          </a>
+          <h1 className="atletas-titulo">Atletas</h1>
+        </div>
         <main className="atletas-conteudo">
           <Carregando texto="Carregando atleta…" />
         </main>
@@ -173,16 +178,15 @@ export default function AtletaDetalhes() {
   if (erro || !atleta) {
     return (
       <div className="pagina-app">
-        <div className="atletas-titulo-wrapper"><h1 className="atletas-titulo">Atletas</h1></div>
+        <div className="atletas-titulo-wrapper">
+          <a href="#/app/atletas" className="btn-voltar-topo" aria-label="Voltar">
+            <img src={voltarImg} className="icone-voltar-topo" />
+          </a>
+          <h1 className="atletas-titulo">Atletas</h1>
+        </div>
         <main className="atletas-conteudo">
           <MensagemErro mensagem={erro || 'Este atleta não existe ou foi removido.'} />
         </main>
-        <footer className="rodape">
-          <a href="#/app/atletas" className="botao-inicio">
-            <img src={voltarImg} className="icone-voltar" />
-            Voltar
-          </a>
-        </footer>
       </div>
     );
   }
@@ -190,6 +194,9 @@ export default function AtletaDetalhes() {
   return (
     <div className="pagina-app">
       <div className="atletas-titulo-wrapper">
+        <a href="#/app/atletas" className="btn-voltar-topo" aria-label="Voltar">
+          <img src={voltarImg} className="icone-voltar-topo" />
+        </a>
         <h1 className="atletas-titulo">Atletas</h1>
       </div>
 
@@ -332,13 +339,6 @@ export default function AtletaDetalhes() {
         </div>
 
       </main>
-
-      <footer className="rodape">
-        <a href="#/app/atletas" className="botao-inicio">
-          <img src={voltarImg} className="icone-voltar" />
-          Voltar
-        </a>
-      </footer>
     </div>
   );
 }

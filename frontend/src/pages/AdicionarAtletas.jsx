@@ -222,6 +222,9 @@ export default function AdicionarAtletas() {
   return (
     <div className="pagina-app">
       <div className="atletas-titulo-wrapper">
+        <a href="#/app/atletas" className="btn-voltar-topo" aria-label="Voltar">
+          <img src={voltarImg} className="icone-voltar-topo" />
+        </a>
         <h1 className="atletas-titulo">Atletas</h1>
       </div>
 
@@ -319,13 +322,6 @@ export default function AdicionarAtletas() {
         </div>
 
       </main>
-
-      <footer className="rodape">
-        <a href="#/app/atletas" className="botao-inicio">
-          <img src={voltarImg} className="icone-voltar" />
-          voltar
-        </a>
-      </footer>
 
       <div className={`aviso${avisoVisivel ? ' visivel' : ''}`} id="aviso">✔ Atleta salvo com sucesso!</div>
 

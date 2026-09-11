@@ -622,7 +622,12 @@ export default function DetalheJogo() {
   if (carregando) {
     return (
       <div className="pagina-app">
-        <div className="titulo-wrapper"><h1 className="titulo-pagina">Jogos</h1></div>
+        <div className="titulo-wrapper">
+          <a href="#/app/jogos" className="btn-voltar-topo" aria-label="Voltar">
+            <img src={voltarImg} className="icone-voltar-topo" />
+          </a>
+          <h1 className="titulo-pagina">Jogos</h1>
+        </div>
         <main className="conteudo">
           <CarregandoJogo />
         </main>
@@ -633,16 +638,15 @@ export default function DetalheJogo() {
   if (erro || !jogo) {
     return (
       <div className="pagina-app">
-        <div className="titulo-wrapper"><h1 className="titulo-pagina">Jogos</h1></div>
+        <div className="titulo-wrapper">
+          <a href="#/app/jogos" className="btn-voltar-topo" aria-label="Voltar">
+            <img src={voltarImg} className="icone-voltar-topo" />
+          </a>
+          <h1 className="titulo-pagina">Jogos</h1>
+        </div>
         <main className="conteudo">
           <p style={{ color: '#ff6b7a' }}>{erro || 'Jogo não encontrado.'}</p>
         </main>
-        <footer className="rodape">
-          <a href="#/app/jogos" className="botao-voltar">
-            <img src={voltarImg} className="icone-voltar" />
-            Voltar
-          </a>
-        </footer>
       </div>
     );
   }
@@ -652,6 +656,9 @@ export default function DetalheJogo() {
   return (
     <div className="pagina-app">
       <div className="titulo-wrapper">
+        <a href="#/app/jogos" className="btn-voltar-topo" aria-label="Voltar">
+          <img src={voltarImg} className="icone-voltar-topo" />
+        </a>
         <h1 className="titulo-pagina">Jogos</h1>
       </div>
 
@@ -753,13 +760,6 @@ export default function DetalheJogo() {
         </div>
 
       </main>
-
-      <footer className="rodape">
-        <a href="#/app/jogos" className="botao-voltar">
-          <img src={voltarImg} className="icone-voltar" />
-          Voltar
-        </a>
-      </footer>
     </div>
   );
 }

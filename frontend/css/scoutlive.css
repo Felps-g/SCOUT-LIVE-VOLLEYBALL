@@ -10,7 +10,7 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  background: #060d1c;
+  background: #07101F;
   font-family: "Nexa", "Nunito", Arial, sans-serif;
   color: #fff;
   overflow: hidden;
@@ -492,6 +492,13 @@ button { font-family: inherit; }
   border-right: 1px solid rgba(255,255,255,0.09);
 }
 
+/* divisória entre acerto e erro (ou C e Erro, na recepção), dentro do
+   mesmo fundamento — tracejada e mais sutil, pra não ser confundida
+   com a divisória sólida que separa um fundamento do outro */
+.col-divisor-ae {
+  border-right: 1px dashed rgba(255,255,255,0.16);
+}
+
 /* linhas dos jogadores: sem altura fixa, então dividem entre si todo o
    espaço que sobrar da tabela (evita a faixa vazia embaixo do elenco) */
 .tabela-linha { height: auto; }
@@ -592,7 +599,7 @@ button { font-family: inherit; }
   width: 26px;
   height: 26px;
   flex-shrink: 0;
-  border-radius: 9px;
+  border-radius: 6px;
   border: none;
   display: flex;
   align-items: center;
@@ -609,17 +616,17 @@ button { font-family: inherit; }
   cursor: not-allowed;
 }
 
-.cc-btn--mais { background: #2ecc71; }
+.cc-btn--mais { background: #146b3a; }
 .cc-btn--mais:hover:not(:disabled) { opacity: 0.85; }
 
-.cc-btn--menos { background: #e8273a; }
+.cc-btn--menos { background: #7a1420; }
 .cc-btn--menos:hover:not(:disabled) { opacity: 0.85; }
 
 /* cor dos botões +/- de acordo com a coluna (acerto = verde, erro = vermelho) */
-.cc-btn--verde { background: #2ecc71; }
+.cc-btn--verde { background: #146b3a; }
 .cc-btn--verde:hover:not(:disabled) { opacity: 0.85; }
 
-.cc-btn--vermelho { background: #e8273a; }
+.cc-btn--vermelho { background: #7a1420; }
 .cc-btn--vermelho:hover:not(:disabled) { opacity: 0.85; }
 
 .toque-label {
@@ -761,7 +768,7 @@ button { font-family: inherit; }
 .footer {
   flex-shrink: 0;
   height: 62px;
-  background: #07101f;
+  background: #07101F;
   border-top: 1px solid rgba(255,255,255,0.07);
   display: flex;
   align-items: center;
@@ -1246,12 +1253,43 @@ button { font-family: inherit; }
   .topo-scout,
   .legenda,
   .tabela-scout-wrap { max-width: 1800px; }
+
+  /* tabela de scout — dimensionamento "compacto": tablets, ipads e
+     notebooks pequenos (900–1299px). antes as 14 colunas de fundamento
+     não tinham largura definida e a tabela dividia o espaço disponível
+     igualmente entre elas, então em telas menores tudo ficava espremido
+     e colado. agora cada coluna tem uma largura mínima; se a tela não
+     couber tudo, quem rola é só a tabela (.tabela-scroll), não o layout
+     inteiro */
+  .tabela-scout { min-width: 760px; }
+
+  .th-jogador { width: 120px; }
+  .tabela-grupo-row th:nth-child(2) { width: 90px; }  /* Saque */
+  .tabela-grupo-row th:nth-child(3) { width: 170px; } /* Recepção */
+  .tabela-grupo-row th:nth-child(4) { width: 90px; }  /* Ataque */
+  .tabela-grupo-row th:nth-child(5) { width: 90px; }  /* Bloqueio */
+  .tabela-grupo-row th:nth-child(6) { width: 90px; }  /* Defesa */
+  .tabela-grupo-row th:nth-child(7) { width: 90px; }  /* Levantamento */
+
+  .tabela-scout th, .tabela-scout td { padding: 7px 3px; }
+
+  .tabela-grupo-row th { font-size: 0.56rem; height: 26px; padding-top: 7px; padding-bottom: 4px; }
+  .tabela-sub-row th { font-size: 0.48rem; height: 24px; top: 26px; }
+
+  .td-jogador { padding-left: 14px; }
+  .td-jogador-numero { width: 18px; height: 18px; font-size: 0.56rem; }
+  .td-nome { font-size: 0.68rem; max-width: 78px; }
+  .td-posicao { font-size: 0.48rem; }
+
+  .cc { gap: 4px; }
+  .cc-btn { width: 17px; height: 17px; }
+  .cc-valor { font-size: 0.62rem; min-width: 10px; }
 }
 
 /* ═══════════════════════════════════════════════════════════
-   TELAS BEM LARGAS  ≥ 1300px
-   O card fica mais largo pra caber as 5 posições numa linha só,
-   mesmo com nomes de atleta grandes — continua um card por linha
+   NOTEBOOKS MÉDIOS  ≥ 1300px
+   O card de escalação fica mais largo (5 posições numa linha só) e a
+   tabela de scout ganha mais espaço por coluna
 ═══════════════════════════════════════════════════════════ */
 
 @media (min-width: 1300px) {
@@ -1265,6 +1303,61 @@ button { font-family: inherit; }
   .ej-info { min-width: 260px; }
 
   .ej-posicoes { flex-wrap: nowrap; }
+
+  .tabela-scout { min-width: 1000px; }
+
+  .th-jogador { width: 150px; }
+  .tabela-grupo-row th:nth-child(2) { width: 110px; }
+  .tabela-grupo-row th:nth-child(3) { width: 210px; }
+  .tabela-grupo-row th:nth-child(4) { width: 110px; }
+  .tabela-grupo-row th:nth-child(5) { width: 110px; }
+  .tabela-grupo-row th:nth-child(6) { width: 110px; }
+  .tabela-grupo-row th:nth-child(7) { width: 110px; }
+
+  .tabela-scout th, .tabela-scout td { padding: 8px 5px; }
+
+  .tabela-grupo-row th { font-size: 0.64rem; height: 30px; padding-top: 8px; padding-bottom: 5px; }
+  .tabela-sub-row th { font-size: 0.54rem; height: 26px; top: 30px; }
+
+  .td-jogador { padding-left: 20px; }
+  .td-jogador-numero { width: 21px; height: 21px; font-size: 0.62rem; }
+  .td-nome { font-size: 0.76rem; max-width: 105px; }
+  .td-posicao { font-size: 0.54rem; }
+
+  .cc { gap: 5px; }
+  .cc-btn { width: 20px; height: 20px; }
+  .cc-valor { font-size: 0.68rem; min-width: 11px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NOTEBOOKS GRANDES E DESKTOPS  ≥ 1600px
+   Tamanho "cheio" da tabela de scout — igual ao desenho original
+═══════════════════════════════════════════════════════════ */
+
+@media (min-width: 1600px) {
+  .tabela-scout { min-width: 1360px; }
+
+  .th-jogador { width: 210px; }
+  .tabela-grupo-row th:nth-child(2) { width: 170px; }
+  .tabela-grupo-row th:nth-child(3) { width: 300px; }
+  .tabela-grupo-row th:nth-child(4) { width: 170px; }
+  .tabela-grupo-row th:nth-child(5) { width: 170px; }
+  .tabela-grupo-row th:nth-child(6) { width: 170px; }
+  .tabela-grupo-row th:nth-child(7) { width: 170px; }
+
+  .tabela-scout th, .tabela-scout td { padding: 8px 6px; }
+
+  .tabela-grupo-row th { font-size: 0.72rem; height: 34px; padding-top: 10px; padding-bottom: 6px; }
+  .tabela-sub-row th { font-size: 0.62rem; height: 30px; top: 34px; }
+
+  .td-jogador { padding-left: 32px; }
+  .td-jogador-numero { width: 26px; height: 26px; font-size: 0.72rem; }
+  .td-nome { font-size: 0.86rem; max-width: 150px; }
+  .td-posicao { font-size: 0.6rem; }
+
+  .cc { gap: 5px; }
+  .cc-btn { width: 26px; height: 26px; }
+  .cc-valor { font-size: 0.82rem; min-width: 14px; }
 }
 
 

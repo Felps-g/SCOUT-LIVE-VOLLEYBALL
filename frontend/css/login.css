@@ -1,42 +1,316 @@
-.pagina {
-  width: 100%;
-  min-height: 100vh;
-  background: linear-gradient(90deg, #080f20, #050d1f);
-  display: flex;
+/* ═══════════════════════════════════════
+   SCOUT LIVE — landing pública + acesso
+   Página inteira rola dentro de .pagina-scroll
+   (o app usa body { overflow:hidden }, então a
+   rolagem acontece só aqui dentro, sem afetar
+   o resto do SPA)
+═══════════════════════════════════════ */
+
+.pagina-scroll {
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  background: #05070d;
+  color: #fff;
 }
 
-/*esquerda */
+/* ── BARRA SUPERIOR FIXA ─────────────────── */
 
-.painel-lateral {
-  display: none;
-  width: 45%;
-  background: #050d1f;
+.landing-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: rgba(5,7,13,0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.landing-nav-marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.landing-nav-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 7px;
+}
+
+.landing-nav-botao {
+  background: #1a5dc8;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Nexa', Arial, sans-serif;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.2s, transform 0.15s;
+}
+.landing-nav-botao:hover  { background: #2d7fff; }
+.landing-nav-botao:active { transform: scale(0.97); }
+
+/* ── HERO ─────────────────────────────────── */
+
+.landing-hero {
   position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px;
+  background-size: cover;
+  background-position: 70% center;
+  background-color: #05070d;
   overflow: hidden;
 }
 
-.painel-imagem {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
+.landing-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(100deg, rgba(4,7,15,0.95) 0%, rgba(4,7,15,0.78) 42%, rgba(4,7,15,0.45) 75%, rgba(4,7,15,0.55) 100%),
+    linear-gradient(0deg, rgba(4,7,15,0.7) 0%, rgba(4,7,15,0) 35%);
+  pointer-events: none;
 }
 
-/* formulario direito */
+.landing-hero-conteudo {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 8px;
+}
 
-.painel-formulario {
-  flex: 1;
+.landing-hero-titulo {
+  font-size: clamp(2rem, 4.5vw + 1rem, 3.4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+
+.landing-hero-subtitulo {
+  font-size: clamp(0.95rem, 1vw + 0.6rem, 1.15rem);
+  line-height: 1.6;
+  color: rgba(255,255,255,0.75);
+  max-width: 480px;
+  margin-bottom: 32px;
+}
+
+.landing-hero-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.landing-botao-primario {
+  background: #1a5dc8;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 26px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Nexa', Arial, sans-serif;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.2s, transform 0.15s;
+}
+.landing-botao-primario:hover  { background: #2d7fff; }
+.landing-botao-primario:active { transform: scale(0.98); }
+
+.landing-botao-secundario {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 14px 26px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Nexa', Arial, sans-serif;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.2s, transform 0.15s;
+}
+.landing-botao-secundario:hover  { background: rgba(255,255,255,0.12); }
+.landing-botao-secundario:active { transform: scale(0.98); }
+
+.landing-scroll-indicador {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px;
-  background: #000000;
+  cursor: pointer;
+  animation: flutuar 2s ease-in-out infinite;
+  transition: background 0.2s;
+}
+.landing-scroll-indicador:hover { background: rgba(255,255,255,0.14); }
+.landing-scroll-indicador svg { width: 18px; height: 18px; }
+
+@keyframes flutuar {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(6px); }
+}
+
+/* ── SEÇÕES GENÉRICAS ─────────────────────── */
+
+.landing-secao {
+  padding: 88px 24px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.landing-secao-cabecalho {
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto 48px;
+}
+
+.landing-secao-titulo {
+  font-size: clamp(1.5rem, 1.6vw + 1rem, 2.1rem);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.landing-secao-subtitulo {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.6);
+}
+
+/* ── RECURSOS ─────────────────────────────── */
+
+.landing-secao--recursos {
+  background: #05070d;
+}
+
+.landing-grade-recursos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.landing-card-recurso {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 16px;
+  padding: 26px 24px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+.landing-card-recurso:hover {
+  border-color: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.06);
+  transform: translateY(-2px);
+}
+
+.landing-card-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(45,127,255,0.16);
+  color: #4d9fff;
+  margin-bottom: 16px;
+}
+.landing-card-icone svg { width: 21px; height: 21px; }
+
+.landing-card-recurso h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.landing-card-recurso p {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.6);
+}
+
+/* ── COMO FUNCIONA ────────────────────────── */
+
+.landing-secao--passos {
+  background: #070a12;
+  border-radius: 28px;
+}
+
+.landing-passos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+.landing-passo {
+  position: relative;
+  padding-left: 52px;
+}
+
+.landing-passo-numero {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #1a5dc8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.landing-passo h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.landing-passo p {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.6);
+}
+
+/* ── ACESSO (login / cadastro) ────────────── */
+
+.landing-secao--acesso {
+  max-width: 480px;
+  padding-top: 40px;
+  padding-bottom: 96px;
 }
 
 .formulario-container {
   width: 100%;
-  max-width: 400px;
   animation: surgir 0.5s ease both;
 }
 
@@ -219,39 +493,40 @@
 
 .oculto { display: none; }
 
-.botao-sair {
-  display: none;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 700;
-  font-family: 'Nexa', Arial, sans-serif;
-  color: rgba(255,255,255,0.55);
-  cursor: pointer;
-  transition: all 0.2s;
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
+/* ── RODAPÉ ───────────────────────────────── */
+
+.landing-footer {
+  padding: 28px 24px 40px;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.landing-footer p {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.4);
 }
 
 /*tablet*/
 
 @media (min-width: 768px) {
-  .painel-lateral {
-    display: flex;
+  .landing-secao { padding: 110px 32px; }
+
+  .landing-grade-recursos {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .painel-formulario {
-    padding: 60px 48px;
+
+  .landing-passos {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
   }
 }
 
 /*desktop*/
 
 @media (min-width: 1200px) {
-  .painel-lateral {
-    width: 50%;
+  .landing-grade-recursos {
+    grid-template-columns: repeat(4, 1fr);
   }
-  .formulario-container { max-width: 440px; }
-  .formulario-titulo    { font-size: 1.8rem; }
+
+  .landing-hero-conteudo { max-width: 720px; }
 }

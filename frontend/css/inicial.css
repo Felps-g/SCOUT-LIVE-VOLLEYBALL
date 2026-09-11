@@ -29,6 +29,7 @@
   padding: 28px 16px;
   gap: 10px;
   flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .logo-equipe {
@@ -40,8 +41,8 @@
 }
 
 .logo-equipe-img {
-  width: 44px;
-  height: 44px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
 }
 
@@ -215,7 +216,6 @@
 .botao-nav:nth-child(2) { animation-delay: 0.10s; }
 .botao-nav:nth-child(3) { animation-delay: 0.15s; }
 .botao-nav:nth-child(4) { animation-delay: 0.20s; }
-.botao-nav:nth-child(5) { animation-delay: 0.25s; }
 
 @keyframes surgir {
   from { opacity: 0; transform: translateY(20px); }
@@ -271,7 +271,6 @@
 .botao-nav--ao-vivo .icone-nav { background: rgba(232,39,58,0.15);  border: 1px solid rgba(232,39,58,0.3); }
 .botao-nav--jogos   .icone-nav { background: rgba(45,127,255,0.12); border: 1px solid rgba(45,127,255,0.3); }
 .botao-nav--atletas .icone-nav { background: rgba(45,127,255,0.12); border: 1px solid rgba(45,127,255,0.3); }
-.botao-nav--perfil  .icone-nav { background: rgba(77,159,255,0.10); border: 1px solid rgba(77,159,255,0.25); }
 
 .botao-nav--ao-vivo:hover { border-color: rgba(232,39,58,0.5) !important; }
 .botao-nav--ao-vivo:hover::before {
@@ -315,12 +314,8 @@
   }
 
   .logo-equipe-img {
-    width: 60px;
-    height: 60px;
-  }
-
-  .logo {
-    font-size: 32px;
+    width: 84px;
+    height: 84px;
   }
 
   .usuario-avatar {
@@ -329,10 +324,10 @@
     font-size: 13px;
   }
 
-  /* 5 quadrados (Scout Live, Jogos, Equipes, Atletas, Perfil) — 3 colunas
-     cabem melhor num tablet do que 4, que sobrava 1 item sozinho na linha */
+  /* 4 quadrados (Scout Live, Jogos, Equipes, Atletas) — 2 colunas
+     formam um grid 2x2 certinho no tablet */
   .grade-navegacao {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     padding: 16px 40px 24px;
     gap: 16px;
     align-content: center;
@@ -371,13 +366,8 @@
   }
 
   .logo-equipe-img {
-    width: 60px;
-    height: 60px;
-  }
-
-  .logo {
-    font-size: 32px;
-    letter-spacing: 5px;
+    width: 84px;
+    height: 84px;
   }
 
   .usuario-avatar {
@@ -394,10 +384,9 @@
     padding: 7px 14px 7px 7px;
   }
 
-  /* tela larga o bastante pra caber os 5 quadrados numa linha só,
-     incluindo o de Equipes */
+  /* tela larga o bastante pra caber os 4 quadrados numa linha só */
   .grade-navegacao {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     padding: 20px 80px 24px;
     gap: 20px;
     flex: 1;
@@ -444,10 +433,6 @@
     padding: 28px 120px;
   }
 
-  .logo {
-    font-size: 38px;
-  }
-
   .grade-navegacao {
     padding: 20px 120px 28px;
     gap: 24px;
@@ -487,14 +472,14 @@
 
   /* — cabeçalho fixo no topo — */
   .cabecalho {
-    padding: 28px 16px;
+    padding: 20px 16px;
     gap: 8px;
     flex-shrink: 0;
   }
 
   .logo-equipe-img {
-    width: 40px;
-    height: 40px;
+    width: 56px;
+    height: 56px;
   }
 
   .logo {
@@ -524,16 +509,17 @@
     height: 18px;
   }
 
-  /* — 5 itens não cabem mais como quadrados 2x2; no celular vira uma
+  /* — 4 itens não cabem mais como quadrados 2x2; no celular vira uma
      lista de retângulos arredondados empilhados, com rolagem se precisar — */
   .grade-navegacao {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
     padding: 10px 14px calc(env(safe-area-inset-bottom, 0px) + 14px);
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+    margin-top: 5vh;
   }
 
   .botao-nav {

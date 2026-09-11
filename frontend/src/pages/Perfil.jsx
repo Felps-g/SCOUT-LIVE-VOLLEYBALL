@@ -17,7 +17,10 @@ export default function Perfil() {
   // guarda a instância do cropper pra poder destruir quando fechar
   const cropperRef = useRef(null);
 
+  // começa já com a foto salva (se o técnico já tiver definido uma antes),
+  // em vez de sempre abrir com o placeholder até um novo carregamento
   const [fotoSrc, setFotoSrc]             = useState('');
+  const [salvandoFoto, setSalvandoFoto]     = useState(false);
   const [modalCropAberto, setModalCropAberto] = useState(false);
   const [imagemCropSrc, setImagemCropSrc]   = useState('');
   const [modalEditarAberto, setModalEditarAberto] = useState(false);
@@ -41,6 +44,11 @@ export default function Perfil() {
   // exatamente o mesmo dado que o contexto já tem.
   const perfilNome  = usuario?.nome || '';
   const valorEmail = usuario?.email || '';
+
+  // carrega a foto já salva assim que o perfil chega do AuthContext
+  useEffect(() => {
+    if (usuario?.fotoUrl) setFotoSrc(usuario.fotoUrl);
+  }, [usuario?.fotoUrl]);
 
   // FOTO DE PERFIL
   // o botão de editar foto aciona o input de arquivo escondido
@@ -105,21 +113,31 @@ export default function Perfil() {
     if (inputFotoRef.current) inputFotoRef.current.value = '';
   }
 
-  // confirma o recorte e aplica no círculo do perfil
-  function confirmarCrop() {
+  // confirma o recorte, aplica no círculo do perfil e salva no backend
+  async function confirmarCrop() {
     if (!cropperRef.current) return;
 
     const canvas    = cropperRef.current.getCroppedCanvas({ width: 300, height: 300 });
     const fotoFinal = canvas.toDataURL('image/jpeg', 0.9);
 
     setFotoSrc(fotoFinal);
-
-    // quando a api estiver pronta, enviar a foto atualizada aqui.
-    // const formData = new FormData();
-    // formData.append('foto', dataURLtoBlob(fotoFinal));
-    // await fetch('/api/perfil/foto', { method: 'POST', body: formData });
-
     fecharModalCrop();
+
+    // mesmo esquema já usado pra foto do atleta: vai em base64 dentro do
+    // JSON e fica salva no user_metadata do técnico (sem storage de
+    // arquivo configurado no projeto — ver comentário em authService.js)
+    setSalvandoFoto(true);
+    try {
+      await apiRequest('/auth/profile', {
+        method: 'PUT',
+        body: { foto: fotoFinal }
+      });
+      atualizarUsuario({ fotoUrl: fotoFinal });
+    } catch (err) {
+      alert(err.message || 'Não foi possível salvar a foto.');
+    } finally {
+      setSalvandoFoto(false);
+    }
   }
 
   // MODAL DE EDITAR INFORMAÇÕES
@@ -224,7 +242,7 @@ export default function Perfil() {
             </div>
 
             <span className="perfil-nome" id="perfilNome">{perfilNome}</span>
-            <span className="perfil-cargo">Técnico</span>
+            <span className="perfil-cargo">{salvandoFoto ? 'Salvando foto...' : 'Técnico'}</span>
             <div className="perfil-divider"></div>
 
             <button className="btn-sair" id="btnSair" onClick={handleSair}>

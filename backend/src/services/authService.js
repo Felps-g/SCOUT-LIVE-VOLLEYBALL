@@ -90,17 +90,23 @@ export async function buscarPerfil(token) {
   };
 }
 
-export async function atualizarPerfil(token, { nome, telefone }) {
+export async function atualizarPerfil(token, { nome, telefone, foto }) {
   const usuario = await validarToken(token);
 
   // supabase.auth.updateUser() atualizaria a sessão ATUAL do client que o
   // chama — mas o client do servidor nunca fez login como esse usuário,
   // então nunca teria efeito. O jeito certo de um servidor atualizar
   // QUALQUER usuário é pelo admin API, usando o id já validado acima.
+  //
+  // foto do técnico: mesmo esquema já usado pra foto do atleta (ver
+  // ALTER TABLE players ADD COLUMN photo_url em DATABASE_MIGRATION.sql) —
+  // vai em base64 dentro do JSON e fica salva direto no user_metadata,
+  // já que não tem storage de arquivo configurado no projeto.
   const { data, error } = await supabaseAdmin.auth.admin.updateUserById(usuario.id, {
     user_metadata: {
       nome: nome || usuario.user_metadata?.nome,
-      telefone: telefone || usuario.user_metadata?.telefone
+      telefone: telefone || usuario.user_metadata?.telefone,
+      foto_url: foto !== undefined ? foto : usuario.user_metadata?.foto_url
     }
   });
 

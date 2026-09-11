@@ -1,4 +1,5 @@
 .atletas-titulo-wrapper {
+  position: relative;
   flex-shrink: 0;
   height: 84px;
   display: flex;
@@ -17,6 +18,30 @@
   letter-spacing: 3px;
   text-transform: uppercase;
   text-align: center;
+}
+
+.btn-voltar-topo {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: rgba(45,127,255,0.15);
+  border: 1px solid rgba(45,127,255,0.3);
+  border-radius: 50%;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-voltar-topo:hover { background: rgba(45,127,255,0.25); }
+
+.btn-voltar-topo .icone-voltar-topo {
+  width: 16px;
+  height: 16px;
 }
 
 .atletas-conteudo {
@@ -167,46 +192,6 @@
   display: block;
 }
 
-/* rodapé */
-
-.rodape {
-  background: #080f20;
-  border-top: 1px solid rgba(255,255,255,0.07);
-  display: flex;
-  align-items: center;
-  padding: 10px 24px;
-  flex-shrink: 0;
-}
-
-.botao-inicio {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  background: rgba(45,127,255,0.15);
-  border: 1px solid rgba(45,127,255,0.3);
-  border-radius: 12px;
-  padding: 8px 16px;
-  color: #4d9fff;
-  cursor: pointer;
-  font-family: "Nexa", Arial, sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: background 0.2s;
-}
-
-.botao-inicio:hover { background: rgba(45,127,255,0.25); }
-
-.icone-voltar {
-  width: 18px;
-  height: 18px;
-  stroke: #4d9fff;
-  margin-right: 5px;
-}
-
 /* tablet */
 
 @media (min-width: 601px) and (max-width: 900px) {
@@ -221,6 +206,7 @@
 @media (max-width: 600px) {
 
   .atletas-titulo-wrapper { height: 72px; padding: 0 14px; }
+  .btn-voltar-topo { left: 14px; width: 34px; height: 34px; }
   .atletas-titulo { font-size: 16px; letter-spacing: 2px; }
 
   .atletas-conteudo {
@@ -275,7 +261,6 @@
     padding: 9px 12px;
   }
 
-  .rodape { padding: 8px 14px; }
 }
 
 /* ===== Regras adicionais mantidas do fork do Felipe (funcionalidades novas) ===== */

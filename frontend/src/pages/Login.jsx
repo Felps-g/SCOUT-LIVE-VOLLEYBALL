@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import '../../css/login.css';
 import { apiRequest, setAuthToken } from '../services/api.js';
 import { buscarPerfilAtual } from '../services/auth.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import telaImg from '../assets/IMG/Tela.png';
+import heroImg from '../assets/IMG/Tela.jpg';
+import scoutlogoImg from '../assets/IMG/scoutlogo.png';
 
 // ── MÁSCARA DE CPF ───────────────────────────
 function aplicarMascaraCpf(valor) {
@@ -52,6 +53,45 @@ const SvgOlhoFechado = () => (
   </svg>
 );
 
+// SVGs dos recursos apresentados na landing do login
+const SvgAoVivo = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/>
+  </svg>
+);
+
+const SvgGrafico = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="4" y1="20" x2="20" y2="20"/>
+    <rect x="6" y="12" width="3" height="8" rx="0.5"/>
+    <rect x="13" y="7" width="3" height="13" rx="0.5"/>
+    <path d="M6 9 11 5l3 3 4-4"/>
+  </svg>
+);
+
+const SvgEquipe = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="8" r="3.2"/>
+    <path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/>
+    <circle cx="18" cy="7.5" r="2.4"/>
+    <path d="M15.7 14.2c2.7.4 4.8 2.4 4.8 5.3"/>
+  </svg>
+);
+
+const SvgRelatorio = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M7 3h7l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>
+    <path d="M14 3v4h4"/>
+    <path d="M9 13v4M12 11v6M15 15v2"/>
+  </svg>
+);
+
+const SvgSeta = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 9l6 6 6-6"/>
+  </svg>
+);
+
 export default function Login() {
   const { estado, login } = useAuth();
 
@@ -63,6 +103,21 @@ export default function Login() {
       window.location.hash = '';
     }
   }, [estado]);
+
+  // ── ROLAGEM SUAVE ATÉ O FORMULÁRIO ───────────
+  // a landing inteira rola dentro de ".pagina-scroll" (não pela hash da
+  // URL, que já é usada pelo roteador do App.jsx pra trocar de página)
+  const acessoRef = useRef(null);
+  const recursosRef = useRef(null);
+
+  function irParaAcesso(aba) {
+    if (aba) trocarAba(aba);
+    acessoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function irParaRecursos() {
+    recursosRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   // ── ALTERNÂNCIA DE ABAS ──────────────────────
   const [abaAtiva, setAbaAtiva] = useState('entrar');
@@ -196,13 +251,100 @@ export default function Login() {
   function erroClassCadastro(id){ return camposErroCadastro.includes(id) ? ' campo-input--erro' : ''; }
 
   return (
-    <div className="pagina">
+    <div className="pagina-scroll">
 
-      <div className="painel-lateral">
-        <img className="painel-imagem" src={telaImg} alt="Scout Live" />
-      </div>
+      {/* ── BARRA SUPERIOR FIXA */}
+      <header className="landing-nav">
+        <div className="landing-nav-marca">
+          <img src={scoutlogoImg} alt="" className="landing-nav-logo" />
+          <span>SCOUT LIVE</span>
+        </div>
+        <button className="landing-nav-botao" onClick={() => irParaAcesso('entrar')}>Entrar</button>
+      </header>
 
-      <div className="painel-formulario">
+      {/* ── HERO */}
+      <section className="landing-hero" style={{ backgroundImage: `url(${heroImg})` }}>
+        <div className="landing-hero-overlay" aria-hidden="true"></div>
+
+        <div className="landing-hero-conteudo">
+          <h1 className="landing-hero-titulo">
+            O placar mostra o resultado.<br />
+            O scout mostra a evolução.
+          </h1>
+          <p className="landing-hero-subtitulo">
+            Registre cada jogada em tempo real durante a partida e acompanhe a
+            evolução do seu time em gráficos gerados na hora, direto da quadra.
+          </p>
+          <div className="landing-hero-acoes">
+            <button className="landing-botao-primario" onClick={() => irParaAcesso('cadastro')}>Criar conta grátis</button>
+            <button className="landing-botao-secundario" onClick={() => irParaAcesso('entrar')}>Já tenho conta</button>
+          </div>
+        </div>
+
+        <button className="landing-scroll-indicador" onClick={irParaRecursos} aria-label="Rolar para saber mais">
+          <SvgSeta />
+        </button>
+      </section>
+
+      {/* ── RECURSOS */}
+      <section className="landing-secao landing-secao--recursos" ref={recursosRef}>
+        <div className="landing-secao-cabecalho">
+          <h2 className="landing-secao-titulo">Tudo que sua comissão técnica precisa</h2>
+          <p className="landing-secao-subtitulo">Do aquecimento ao apito final, o Scout Live acompanha cada detalhe da partida.</p>
+        </div>
+
+        <div className="landing-grade-recursos">
+          <div className="landing-card-recurso">
+            <span className="landing-card-icone"><SvgAoVivo /></span>
+            <h3>Scout ao vivo</h3>
+            <p>Saques, ataques, bloqueios e erros registrados jogada a jogada, direto da quadra.</p>
+          </div>
+          <div className="landing-card-recurso">
+            <span className="landing-card-icone"><SvgGrafico /></span>
+            <h3>Gráficos de evolução</h3>
+            <p>Veja o desempenho do time e de cada atleta se desenhar enquanto o jogo acontece.</p>
+          </div>
+          <div className="landing-card-recurso">
+            <span className="landing-card-icone"><SvgEquipe /></span>
+            <h3>Equipes e atletas organizados</h3>
+            <p>Elenco, histórico de partidas e estatísticas centralizados em um só lugar.</p>
+          </div>
+          <div className="landing-card-recurso">
+            <span className="landing-card-icone"><SvgRelatorio /></span>
+            <h3>Relatórios exportáveis</h3>
+            <p>Gere PDFs da partida para levar a análise além da quadra.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── COMO FUNCIONA */}
+      <section className="landing-secao landing-secao--passos">
+        <div className="landing-secao-cabecalho">
+          <h2 className="landing-secao-titulo">Como funciona</h2>
+          <p className="landing-secao-subtitulo">Três passos entre montar o time e ver a evolução da equipe.</p>
+        </div>
+
+        <div className="landing-passos">
+          <div className="landing-passo">
+            <span className="landing-passo-numero">1</span>
+            <h3>Monte sua equipe</h3>
+            <p>Cadastre o elenco e organize os atletas por posição antes da partida começar.</p>
+          </div>
+          <div className="landing-passo">
+            <span className="landing-passo-numero">2</span>
+            <h3>Registre o scout ao vivo</h3>
+            <p>Marque cada ação da partida em tempo real, direto do banco ou da arquibancada.</p>
+          </div>
+          <div className="landing-passo">
+            <span className="landing-passo-numero">3</span>
+            <h3>Acompanhe a evolução</h3>
+            <p>Gráficos e estatísticas são gerados automaticamente, set a set.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── ACESSO — entrar / cadastrar */}
+      <section className="landing-secao landing-secao--acesso" ref={acessoRef}>
         <div className="formulario-container">
 
           {/* ── ALTERNÂNCIA DE ABAS */}
@@ -347,7 +489,11 @@ export default function Login() {
           </div>
 
         </div>
-      </div>
+      </section>
+
+      <footer className="landing-footer">
+        <p>Feito para técnicos, comissões técnicas e apaixonados por vôlei.</p>
+      </footer>
 
     </div>
   );

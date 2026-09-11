@@ -55,6 +55,7 @@ export async function buscarPerfilAtual() {
     id: usuarioApi.id,
     email: usuarioApi.email,
     nome: usuarioApi.user_metadata?.nome || usuarioApi.email?.split('@')[0] || '',
+    fotoUrl: usuarioApi.user_metadata?.foto_url || '',
   };
 
   salvarUsuarioLogado(usuario);
