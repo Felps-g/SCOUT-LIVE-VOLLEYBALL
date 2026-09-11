@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
 import '../../css/modal-equipe.css';
-import { listarTimes, criarTime, getTimeSelecionado, setTimeSelecionado } from '../services/time.js';
+import { listarTimes, criarTime, setTimeSelecionado } from '../services/time.js';
 
 // categoria usada quando a equipe é criada por aqui (o modal só pede o
 // nome, então a categoria "de verdade" pode ser ajustada depois na tela
 // de Equipes, que edita o time normalmente)
 const CATEGORIA_PADRAO = 'Geral';
 
-// Aparece uma vez, assim que a pessoa loga (montado em Inicial.jsx),
+// Aparece toda vez que a pessoa entra no app (montado em Inicial.jsx),
 // bloqueando a tela até ela escolher uma equipe — ou, se ainda não tem
-// nenhuma, criar a primeira. Se já existe uma equipe salva e válida no
-// localStorage, o modal nem chega a aparecer.
+// nenhuma, criar a primeira.
 export default function ModalSelecionarEquipe() {
   const [carregando, setCarregando] = useState(true);
   const [visivel, setVisivel] = useState(false);
@@ -33,10 +32,9 @@ export default function ModalSelecionarEquipe() {
         const listaFiltrada = (lista || []).filter(t => t.category !== 'Adversário');
         setTimes(listaFiltrada);
 
-        const salvo = getTimeSelecionado();
-        const aindaExiste = salvo && listaFiltrada.some(t => t.id === salvo.id);
-
-        if (!aindaExiste) setVisivel(true);
+        // sempre pede pra escolher (ou criar) a equipe ao entrar, mesmo que
+        // já tenha uma selecionada de uma sessão anterior
+        setVisivel(true);
       } catch {
         // se a API falhar aqui, não trava a pessoa num modal que ela nem
         // consegue preencher — deixa passar; a tela que ela abrir na

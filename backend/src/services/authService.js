@@ -78,13 +78,37 @@ export async function validarToken(token) {
   return data.user;
 }
 
+// foto/telefone do técnico NÃO podem ir em user_metadata do Supabase Auth:
+// o Supabase embute o user_metadata inteiro dentro do próprio JWT (access_token).
+// Uma foto em base64 ali dentro faz o token crescer várias vezes o tamanho normal,
+// e como o token vai no header Authorization em toda requisição, isso estoura o
+// limite de header do Node/Express -> 431 "Request Header Fields Too Large" em
+// TUDO (o navegador ainda mostra isso como erro de CORS, porque o 431 acontece
+// antes do Express conseguir responder com os headers de CORS).
+// Por isso ficam numa tabela separada (coach_profiles), do mesmo jeito que a foto
+// do atleta já fica em players.photo_url em vez de ir pro token de ninguém.
+async function buscarPerfilExtra(userId) {
+  const { data } = await supabaseAdmin
+    .from('coach_profiles')
+    .select('foto_url, telefone')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  return data || {};
+}
+
 export async function buscarPerfil(token) {
   const usuario = await validarToken(token);
+  const extra = await buscarPerfilExtra(usuario.id);
 
   return {
     id: usuario.id,
     email: usuario.email,
-    user_metadata: usuario.user_metadata,
+    user_metadata: {
+      nome: usuario.user_metadata?.nome,
+      foto_url: extra.foto_url || null,
+      telefone: extra.telefone || null
+    },
     created_at: usuario.created_at,
     last_sign_in_at: usuario.last_sign_in_at
   };
@@ -98,15 +122,11 @@ export async function atualizarPerfil(token, { nome, telefone, foto }) {
   // então nunca teria efeito. O jeito certo de um servidor atualizar
   // QUALQUER usuário é pelo admin API, usando o id já validado acima.
   //
-  // foto do técnico: mesmo esquema já usado pra foto do atleta (ver
-  // ALTER TABLE players ADD COLUMN photo_url em DATABASE_MIGRATION.sql) —
-  // vai em base64 dentro do JSON e fica salva direto no user_metadata,
-  // já que não tem storage de arquivo configurado no projeto.
+  // só nome vai pro user_metadata (é pequeno e não tem problema estar no
+  // token). foto/telefone vão pra coach_profiles — ver buscarPerfilExtra.
   const { data, error } = await supabaseAdmin.auth.admin.updateUserById(usuario.id, {
     user_metadata: {
-      nome: nome || usuario.user_metadata?.nome,
-      telefone: telefone || usuario.user_metadata?.telefone,
-      foto_url: foto !== undefined ? foto : usuario.user_metadata?.foto_url
+      nome: nome || usuario.user_metadata?.nome
     }
   });
 
@@ -116,7 +136,30 @@ export async function atualizarPerfil(token, { nome, telefone, foto }) {
     throw erro;
   }
 
-  return { id: data.user.id, email: data.user.email, user_metadata: data.user.user_metadata };
+  const extraAtual = await buscarPerfilExtra(usuario.id);
+  const { error: erroExtra } = await supabaseAdmin
+    .from('coach_profiles')
+    .upsert({
+      user_id: usuario.id,
+      telefone: telefone || extraAtual.telefone,
+      foto_url: foto !== undefined ? foto : extraAtual.foto_url
+    });
+
+  if (erroExtra) {
+    const erro = new Error(erroExtra.message);
+    erro.status = 400;
+    throw erro;
+  }
+
+  return {
+    id: data.user.id,
+    email: data.user.email,
+    user_metadata: {
+      nome: data.user.user_metadata?.nome,
+      telefone: telefone || extraAtual.telefone,
+      foto_url: foto !== undefined ? foto : extraAtual.foto_url
+    }
+  };
 }
 
 export async function trocarSenha(token, senhaNova) {

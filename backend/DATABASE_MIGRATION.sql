@@ -209,3 +209,20 @@ CREATE POLICY player_match_stats_delete ON public.player_match_stats FOR DELETE
 -- documentação de regra de negócio). Nullable para não quebrar equipes
 -- já cadastradas sem categoria.
 ALTER TABLE public.teams ADD COLUMN IF NOT EXISTS category VARCHAR;
+
+-- ==========================
+-- COACH_PROFILES
+-- ==========================
+-- foto/telefone do técnico NÃO podem ir em auth.users.user_metadata: o
+-- Supabase embute esse metadata inteiro dentro do JWT (access_token), e
+-- uma foto em base64 ali faz o token estourar o limite de header do
+-- Node/Express em toda requisição (431 Request Header Fields Too Large,
+-- que o navegador mostra como se fosse erro de CORS). Por isso ficam
+-- numa tabela separada, do mesmo jeito que players.photo_url.
+CREATE TABLE IF NOT EXISTS public.coach_profiles (
+  user_id UUID PRIMARY KEY REFERENCES auth.users(id),
+  foto_url TEXT,
+  telefone TEXT
+);
+
+ALTER TABLE public.coach_profiles DISABLE ROW LEVEL SECURITY;
