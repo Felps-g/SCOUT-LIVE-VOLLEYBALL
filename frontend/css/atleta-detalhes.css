@@ -189,7 +189,9 @@
   font-size: 13px;
   font-weight: 700;
   width: 100%;
-  display: block;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
 }
 
 /* tablet */

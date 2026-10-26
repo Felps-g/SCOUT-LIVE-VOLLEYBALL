@@ -119,16 +119,21 @@ export const trocarSenha = async (req, res) => {
     const { senha_atual, senha_nova } = req.body;
 
     if (!senha_atual || !senha_nova) {
-      return res.status(400).json({ erro: 'Senha atual e nova são obrigatórias' });
+      return res.status(400).json({
+        mensagem: 'Informe a senha atual e a nova senha.',
+        erro: 'Senha atual e nova são obrigatórias'
+      });
     }
 
-    await authService.trocarSenha(token, senha_nova);
+    await authService.trocarSenha(token, senha_atual, senha_nova);
 
     res.status(200).json({ mensagem: 'Senha alterada com sucesso' });
   } catch (erro) {
     console.error('Erro ao trocar senha:', erro);
     const status = erro.status || 400;
     res.status(status).json({
+      // `mensagem` é o texto em português que o frontend mostra na tela
+      mensagem: status === 401 ? 'Token inválido' : erro.message,
       erro: status === 401 ? 'Token inválido' : 'Erro ao trocar senha',
       detalhes: erro.message
     });

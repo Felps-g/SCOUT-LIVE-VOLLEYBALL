@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS public.players (
   name TEXT NOT NULL,
   position TEXT NOT NULL,
   team_id UUID,
-  cpf VARCHAR UNIQUE NOT NULL,
+  cpf VARCHAR UNIQUE,
   jersey_number SMALLINT,
   height VARCHAR
 );
@@ -42,6 +42,13 @@ ALTER TABLE public.players ADD COLUMN IF NOT EXISTS rg VARCHAR;
 ALTER TABLE public.players ADD COLUMN IF NOT EXISTS age SMALLINT;
 ALTER TABLE public.players ADD COLUMN IF NOT EXISTS weight VARCHAR;
 ALTER TABLE public.players ADD COLUMN IF NOT EXISTS photo_url TEXT;
+
+-- O cadastro de atleta agora é rápido (só nome, número e posição), então o
+-- CPF deixa de ser obrigatório. Em bancos que já existem, a coluna foi criada
+-- com NOT NULL e precisa ser liberada — sem isso o insert falha. O UNIQUE
+-- continua valendo pra CPFs preenchidos (o Postgres aceita vários NULL).
+-- Rodar de novo é seguro mesmo se já estiver liberado.
+ALTER TABLE public.players ALTER COLUMN cpf DROP NOT NULL;
 
 -- Garante que RLS está DESLIGADO em teams/players, do jeito que os
 -- comentários acima sempre descreveram. `CREATE TABLE IF NOT EXISTS` não

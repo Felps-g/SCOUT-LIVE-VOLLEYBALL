@@ -8,6 +8,9 @@ import lupaImg from '../assets/IMG/lupa.png';
 import { listarTimes, listarJogadores, getTimeSelecionado, setTimeSelecionado } from '../services/time.js';
 import MensagemErro from '../components/ui/MensagemErro.jsx';
 import EstadoVazio from '../components/ui/EstadoVazio.jsx';
+import MensagemSucesso from '../components/ui/MensagemSucesso.jsx';
+import ModalAdicionarAtleta from '../components/ModalAdicionarAtleta.jsx';
+import ModalDetalhesAtleta from '../components/ModalDetalhesAtleta.jsx';
 
 // spinner central exibido enquanto os atletas ainda não chegaram da API
 function CarregandoAtletas() {
@@ -32,6 +35,35 @@ export default function Atletas() {
   const [atletas, setAtletas] = useState([]);
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState('');
+
+  // modal de "Adicionar atleta" + aviso de sucesso depois de salvar
+  const [modalAberto, setModalAberto] = useState(false);
+  const [sucesso, setSucesso] = useState('');
+
+  // modal de "Ver detalhes" (só leitura). O atleta fica guardado mesmo
+  // depois de fechar, pra o conteúdo não sumir durante o fade de saída.
+  const [atletaDetalhe, setAtletaDetalhe] = useState(null);
+  const [detalhesAberto, setDetalhesAberto] = useState(false);
+
+  function abrirDetalhes(atleta) {
+    setAtletaDetalhe(atleta);
+    setDetalhesAberto(true);
+  }
+  // atleta excluído: fecha o modal, avisa e recarrega a lista (o cache de
+  // jogadores do time já foi invalidado dentro do excluirJogador)
+  function handleAtletaExcluido() {
+    setDetalhesAberto(false);
+    setSucesso('Atleta excluído com sucesso!');
+    carregarAtletas(timeAtual);
+  }
+    // atleta editado: o modal continua aberto mostrando os dados novos, e a
+  // lista é recarregada por trás (o cache de jogadores já foi invalidado
+  // dentro do atualizarJogador)
+  function handleAtletaEditado(atualizado) {
+    setAtletaDetalhe(atualizado);
+    setSucesso('Atleta atualizado com sucesso!');
+    carregarAtletas(timeAtual);
+  }
 
   async function carregarAtletas(time) {
     if (!time) {
@@ -77,6 +109,21 @@ export default function Atletas() {
 
   useEffect(() => { carregarTimeAtual(); }, []);
 
+  // o aviso de sucesso some sozinho depois de alguns segundos
+  useEffect(() => {
+    if (!sucesso) return;
+    const timer = setTimeout(() => setSucesso(''), 3000);
+    return () => clearTimeout(timer);
+  }, [sucesso]);
+
+  // atleta salvo: fecha o modal, avisa e recarrega a lista (o cache de
+  // jogadores do time já foi invalidado dentro do criarJogador)
+  function handleAtletaSalvo() {
+    setModalAberto(false);
+    setSucesso('Atleta adicionado com sucesso!');
+    carregarAtletas(timeAtual);
+  }
+
   const atletasFiltrados = atletas.filter(a =>
     (a.name || '').toLowerCase().includes(busca.toLowerCase())
   );
@@ -98,10 +145,15 @@ export default function Atletas() {
         )}
 
         <div className="atletas-barra">
-          <a href="#/app/atletas/novo" className="btn-adicionar">
-            <img src={maisImg} className="btn-mais" />
+          <button
+            type="button"
+            className="btn-adicionar"
+            onClick={() => setModalAberto(true)}
+            disabled={!timeAtual}
+          >
+            <img src={maisImg} className="btn-mais" alt="" />
             Adicionar atleta
-          </a>
+          </button>
 
           <div className="atletas-busca">
             <img src={lupaImg} className="icone-busca" />
@@ -113,6 +165,8 @@ export default function Atletas() {
             />
           </div>
         </div>
+
+        <MensagemSucesso mensagem={sucesso} />
 
         <AnimatePresence mode="wait">
           {carregando && (
@@ -144,12 +198,30 @@ export default function Atletas() {
                 } : undefined}
               ></div>
               <span className="atleta-nome">{atleta.name}</span>
-              <a href={`#/app/atletas/detalhes?id=${atleta.id}`} className="btn-detalhes">Ver detalhes</a>
+              <button type="button" className="btn-detalhes" onClick={() => abrirDetalhes(atleta)}>
+                Ver detalhes
+              </button>
             </div>
           ))}
         </div>
 
       </main>
+
+      <ModalAdicionarAtleta
+        aberto={modalAberto}
+        time={timeAtual}
+        onFechar={() => setModalAberto(false)}
+        onSalvo={handleAtletaSalvo}
+      />
+
+      <ModalDetalhesAtleta
+  aberto={detalhesAberto}
+  atleta={atletaDetalhe}
+  onFechar={() => setDetalhesAberto(false)}
+  onExcluido={handleAtletaExcluido}
+  onEditado={handleAtletaEditado}
+/>
+
 
 
     </div>

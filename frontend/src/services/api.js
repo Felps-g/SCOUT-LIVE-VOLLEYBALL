@@ -7,7 +7,7 @@
 // português, prevista de propósito. Ver TABELA DE ESTADOS no final
 // deste arquivo pra visão geral de tudo que é tratado aqui.
 
-import { TOKEN_KEY, TOKEN_KEY_LEGADO, USUARIO_KEY } from '../constants/storage.js';
+import { TOKEN_KEY, TOKEN_KEY_LEGADO, USUARIO_KEY, EQUIPE_PENDENTE_KEY } from '../constants/storage.js';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -113,6 +113,7 @@ export async function apiRequest(path, { method = 'GET', body, auth = true } = {
     if (response.status === 401 && token && !window.location.hash.startsWith('#/login')) {
       clearAuthToken();
       localStorage.removeItem(USUARIO_KEY);
+      try { sessionStorage.removeItem(EQUIPE_PENDENTE_KEY); } catch { /* ignora */ }
       window.location.hash = '#/login?motivo=sessao-expirada';
     }
 
@@ -125,16 +126,3 @@ export async function apiRequest(path, { method = 'GET', body, auth = true } = {
 
 export default API_BASE_URL;
 
-// ============================================================
-// TABELA DE ESTADOS — referência de UX (ver também documentação)
-// ============================================================
-// situação              | tipo (ErroApi)        | onde é decidido
-// ---------------------------------------------------------------
-// usuário não logado     | (nenhum erro)         | PrivateRoute redireciona ANTES de pedir dado
-// sessão expirada         | sessao_expirada       | aqui (401 + já tinha token) -> redireciona + Login mostra aviso
-// credenciais inválidas   | credenciais_invalidas | aqui (401 + login sem token ainda)
-// sem permissão            | sem_permissao        | aqui (403)
-// recurso não encontrado   | nao_encontrado       | aqui (404)
-// erro de validação        | validacao            | aqui (400/409) — usa a mensagem do backend
-// erro de servidor          | servidor            | aqui (500+) — mensagem sempre genérica
-// erro de conexão           | conexao             | aqui (fetch falhou antes de responder)

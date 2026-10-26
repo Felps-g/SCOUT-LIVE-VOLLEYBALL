@@ -67,6 +67,12 @@
 .btn-adicionar:hover  { opacity: 0.88; }
 .btn-adicionar:active { transform: scale(0.96); }
 
+.btn-adicionar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .atletas-busca {
   display: flex;
   align-items: center;

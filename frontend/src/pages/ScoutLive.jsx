@@ -849,7 +849,7 @@ export default function ScoutLive() {
             </div>
 
             {FUNDAMENTOS_PONTUAM[titularAberto.posicao]?.length > 0 && (
-              <>
+              <section className="modal-secao">
                 <div className="secao-titulo secao-titulo--verde">Fundamentos que pontuam</div>
                 <div className="lista-fundamentos">
                   {FUNDAMENTOS_PONTUAM[titularAberto.posicao].map(f => (
@@ -868,9 +868,10 @@ export default function ScoutLive() {
                     </div>
                   ))}
                 </div>
-              </>
+              </section>
             )}
 
+            <section className="modal-secao">
             <div className="secao-titulo secao-titulo--cinza">Fundamentos que não pontuam</div>
             <div className="lista-fundamentos">
               {FUNDAMENTOS_NAO_PONTUAM[titularAberto.posicao]?.map(f => (
@@ -889,6 +890,7 @@ export default function ScoutLive() {
                 </div>
               ))}
             </div>
+            </section>
           </div>
         )}
       </div>
@@ -906,6 +908,7 @@ export default function ScoutLive() {
               </button>
             </div>
 
+            <section className="modal-secao">
             <div className="secao-titulo secao-titulo--cinza">Quem sai</div>
             <div className="lista-troca">
               {titulares.map(t => (
@@ -920,7 +923,9 @@ export default function ScoutLive() {
                 </button>
               ))}
             </div>
+            </section>
 
+            <section className="modal-secao">
             <div className="secao-titulo secao-titulo--cinza">Quem entra</div>
             <div className="lista-troca">
               {banco.length === 0 && <p className="escalacao-msg">Nenhum reserva disponível.</p>}
@@ -935,6 +940,7 @@ export default function ScoutLive() {
                 </button>
               ))}
             </div>
+            </section>
 
             <button
               type="button"

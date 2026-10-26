@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
-import '../../css/modal-equipe.css';
-import { listarTimes, criarTime, setTimeSelecionado } from '../services/time.js';
+
+import { listarTimes, criarTime, setTimeSelecionado, selecaoEquipePendente } from '../services/time.js';
 
 // categoria usada quando a equipe é criada por aqui (o modal só pede o
 // nome, então a categoria "de verdade" pode ser ajustada depois na tela
 // de Equipes, que edita o time normalmente)
 const CATEGORIA_PADRAO = 'Geral';
 
-// Aparece toda vez que a pessoa entra no app (montado em Inicial.jsx),
-// bloqueando a tela até ela escolher uma equipe — ou, se ainda não tem
-// nenhuma, criar a primeira.
+// Aparece só logo depois do login (montado em Inicial.jsx), bloqueando a
+// tela até ela escolher uma equipe — ou, se ainda não tem nenhuma, criar
+// a primeira. Depois que a equipe é selecionada, não aparece mais (nem ao
+// voltar pra tela inicial) até o próximo login.
 export default function ModalSelecionarEquipe() {
   const [carregando, setCarregando] = useState(true);
   const [visivel, setVisivel] = useState(false);
@@ -22,6 +23,12 @@ export default function ModalSelecionarEquipe() {
   useEffect(() => {
     let ativo = true;
 
+    // não acabou de logar (ou já escolheu a equipe): nem busca os times
+    if (!selecaoEquipePendente()) {
+      setCarregando(false);
+      return;
+    }
+
     async function verificar() {
       try {
         const lista = await listarTimes();
@@ -32,8 +39,8 @@ export default function ModalSelecionarEquipe() {
         const listaFiltrada = (lista || []).filter(t => t.category !== 'Adversário');
         setTimes(listaFiltrada);
 
-        // sempre pede pra escolher (ou criar) a equipe ao entrar, mesmo que
-        // já tenha uma selecionada de uma sessão anterior
+        // acabou de logar: pede pra escolher (ou criar) a equipe, mesmo
+        // que já tenha uma selecionada de uma sessão anterior
         setVisivel(true);
       } catch {
         // se a API falhar aqui, não trava a pessoa num modal que ela nem
@@ -81,8 +88,10 @@ export default function ModalSelecionarEquipe() {
 
         {temEquipes ? (
           <>
-            <h2 className="modal-equipe-titulo">Para iniciar, selecione sua equipe</h2>
-            <p className="modal-equipe-subtitulo">Escolha qual equipe você quer acompanhar agora.</p>
+            <header className="modal-cabecalho">
+              <h2 className="modal-equipe-titulo">Para iniciar, selecione sua equipe</h2>
+              <p className="modal-equipe-subtitulo">Escolha qual equipe você quer acompanhar agora.</p>
+            </header>
 
             <div className="modal-equipe-lista">
               {times.map(time => (
@@ -99,10 +108,12 @@ export default function ModalSelecionarEquipe() {
           </>
         ) : (
           <>
-            <h2 className="modal-equipe-titulo">Crie sua equipe</h2>
-            <p className="modal-equipe-subtitulo">
-              Você ainda não tem uma equipe. Dê um nome pra ela pra começar.
-            </p>
+            <header className="modal-cabecalho">
+              <h2 className="modal-equipe-titulo">Crie sua equipe</h2>
+              <p className="modal-equipe-subtitulo">
+                Você ainda não tem uma equipe. Dê um nome pra ela pra começar.
+              </p>
+            </header>
 
             <form className="modal-equipe-form" onSubmit={handleCriar}>
               <input

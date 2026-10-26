@@ -247,6 +247,22 @@ export default function Login() {
     }
   }
 
+  // ENTER NOS FORMULÁRIOS
+  // cada bloco é um <form>, então o Enter dentro de qualquer campo dispara
+  // o submit. Só envia quando os dados estão completos (e não há envio em
+  // andamento) — mesma regra do botão, que fica desabilitado até lá.
+  function handleSubmitLogin(e) {
+    e.preventDefault();
+    if (!loginValido || loginCarregando) return;
+    fazerLogin();
+  }
+
+  function handleSubmitCadastro(e) {
+    e.preventDefault();
+    if (!cadastroValido || cadastroCarregando) return;
+    fazerCadastro();
+  }
+
   function erroClassLogin(id)   { return camposErroLogin.includes(id)   ? ' campo-input--erro' : ''; }
   function erroClassCadastro(id){ return camposErroCadastro.includes(id) ? ' campo-input--erro' : ''; }
 
@@ -349,12 +365,12 @@ export default function Login() {
 
           {/* ── ALTERNÂNCIA DE ABAS */}
           <div className="abas">
-            <button className={`aba${abaAtiva === 'entrar' ? ' aba--ativa' : ''}`} id="abaEntrar" onClick={() => trocarAba('entrar')}>Entrar</button>
-            <button className={`aba${abaAtiva === 'cadastro' ? ' aba--ativa' : ''}`} id="abaCadastro" onClick={() => trocarAba('cadastro')}>Cadastrar</button>
+            <button type="button" className={`aba${abaAtiva === 'entrar' ? ' aba--ativa' : ''}`} id="abaEntrar" onClick={() => trocarAba('entrar')}>Entrar</button>
+            <button type="button" className={`aba${abaAtiva === 'cadastro' ? ' aba--ativa' : ''}`} id="abaCadastro" onClick={() => trocarAba('cadastro')}>Cadastrar</button>
           </div>
 
           {/* bloco de login */}
-          <div className={`bloco-formulario${abaAtiva !== 'entrar' ? ' oculto' : ''}`} id="blocoEntrar">
+          <form className={`bloco-formulario${abaAtiva !== 'entrar' ? ' oculto' : ''}`} id="blocoEntrar" onSubmit={handleSubmitLogin} noValidate>
             <div className="formulario-topo">
               <h1 className="formulario-titulo">Bem-vindo de volta</h1>
               <p className="formulario-subtitulo">Entre com suas credenciais para continuar</p>
@@ -397,7 +413,7 @@ export default function Login() {
 
             <button
               className="botao-enviar"
-              onClick={fazerLogin}
+              type="submit"
               disabled={!loginValido || loginCarregando}
               style={{ opacity: loginValido && !loginCarregando ? 1 : 0.5, cursor: loginValido && !loginCarregando ? 'pointer' : 'not-allowed' }}
             >
@@ -407,10 +423,10 @@ export default function Login() {
             <p className="formulario-rodape">
               Não tem conta? <a href="#" onClick={e => { e.preventDefault(); trocarAba('cadastro'); }}>Cadastre-se</a>
             </p>
-          </div>
+          </form>
 
           {/* bloco de cadastro */}
-          <div className={`bloco-formulario${abaAtiva !== 'cadastro' ? ' oculto' : ''}`} id="blocoCadastro">
+          <form className={`bloco-formulario${abaAtiva !== 'cadastro' ? ' oculto' : ''}`} id="blocoCadastro" onSubmit={handleSubmitCadastro} noValidate>
             <div className="formulario-topo">
               <h1 className="formulario-titulo">Criar conta</h1>
               <p className="formulario-subtitulo">Preencha os dados para se cadastrar</p>
@@ -476,7 +492,7 @@ export default function Login() {
 
             <button
               className="botao-enviar"
-              onClick={fazerCadastro}
+              type="submit"
               disabled={!cadastroValido || cadastroCarregando}
               style={{ opacity: cadastroValido && !cadastroCarregando ? 1 : 0.5, cursor: cadastroValido && !cadastroCarregando ? 'pointer' : 'not-allowed' }}
             >
@@ -486,7 +502,7 @@ export default function Login() {
             <p className="formulario-rodape">
               Já tem conta? <a href="#" onClick={e => { e.preventDefault(); trocarAba('entrar'); }}>Entrar</a>
             </p>
-          </div>
+          </form>
 
         </div>
       </section>

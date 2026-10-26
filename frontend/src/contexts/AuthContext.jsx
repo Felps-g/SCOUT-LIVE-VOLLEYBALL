@@ -19,6 +19,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { getAuthToken } from '../services/api.js';
 import { salvarUsuarioLogado, limparSessao, buscarPerfilAtual } from '../services/auth.js';
+import { marcarSelecaoEquipePendente } from '../services/time.js';
 
 const AuthContext = createContext(null);
 
@@ -53,6 +54,9 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = useCallback((usuarioLogado) => {
+    // só aqui (login de verdade) o modal de equipe deve aparecer; reabrir
+    // o app com a sessão ainda válida passa por inicializar(), não por aqui
+    marcarSelecaoEquipePendente();
     salvarUsuarioLogado(usuarioLogado);
     setUsuario(usuarioLogado);
     setEstado('autenticado');

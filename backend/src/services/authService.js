@@ -5,6 +5,7 @@
  * pelas outras entidades do projeto (times, jogadores, jogos).
  */
 
+import { createClient } from '@supabase/supabase-js';
 import { supabase, supabaseAdmin } from '../config/supabase.js';
 
 export async function login(email, password) {
@@ -162,16 +163,70 @@ export async function atualizarPerfil(token, { nome, telefone, foto }) {
   };
 }
 
-export async function trocarSenha(token, senhaNova) {
+export async function trocarSenha(token, senhaAtual, senhaNova) {
   const usuario = await validarToken(token);
+
+  // Erros de validação usam status 400 de propósito: 401 faz o frontend
+  // achar que a sessão expirou e deslogar a pessoa.
+  const erroValidacao = (mensagem) => {
+    const erro = new Error(mensagem);
+    erro.status = 400;
+    return erro;
+  };
+
+  if (!senhaAtual) {
+    throw erroValidacao('Informe a senha atual.');
+  }
+  if (!senhaNova || senhaNova.length < 6) {
+    throw erroValidacao('A nova senha deve ter pelo menos 6 caracteres.');
+  }
+  if (senhaNova === senhaAtual) {
+    throw erroValidacao('A nova senha precisa ser diferente da atual.');
+  }
+
+  // Confere a senha atual com um cliente descartável. Não dá pra usar o
+  // `supabase` compartilhado: signInWithPassword guarda a sessão em memória
+  // nele e as próximas consultas passariam a rodar como esse usuário.
+  // Mesma chave (e mesma ordem de preferência) que o login do app usa em
+  // config/supabase.js — se a verificação usasse outra, ela podia falhar
+  // com a senha certa só porque aquela chave está errada no .env.
+  const verificador = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY,
+    { auth: { persistSession: false, autoRefreshToken: false } }
+  );
+
+  const { error: erroSenhaAtual } = await verificador.auth.signInWithPassword({
+    email: usuario.email,
+    password: senhaAtual
+  });
+
+  if (erroSenhaAtual) {
+    // só diz "incorreta" quando o Supabase diz que são credenciais inválidas;
+    // qualquer outro motivo (chave errada, e-mail não confirmado, limite de
+    // tentativas...) aparece no terminal do backend pra dar pra investigar
+    const credenciaisInvalidas =
+      erroSenhaAtual.code === 'invalid_credentials' ||
+      /invalid login credentials/i.test(erroSenhaAtual.message || '');
+
+    if (credenciaisInvalidas) {
+      throw erroValidacao('Senha atual incorreta.');
+    }
+
+    console.error(
+      '[authService] trocarSenha: não foi possível verificar a senha atual:',
+      erroSenhaAtual.message,
+      erroSenhaAtual.status ? `(status ${erroSenhaAtual.status})` : ''
+    );
+    throw erroValidacao('Não foi possível confirmar a senha atual. Tente novamente.');
+  }
 
   const { error } = await supabaseAdmin.auth.admin.updateUserById(usuario.id, {
     password: senhaNova
   });
 
   if (error) {
-    const erro = new Error(error.message);
-    erro.status = 400;
-    throw erro;
+    console.error('[authService] trocarSenha falhou no Supabase:', error.message);
+    throw erroValidacao('Não foi possível alterar a senha. Tente novamente.');
   }
 }

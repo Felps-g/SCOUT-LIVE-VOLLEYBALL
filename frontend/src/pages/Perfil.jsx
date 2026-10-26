@@ -30,8 +30,12 @@ export default function Perfil() {
   const [editNome,  setEditNome]  = useState('');
   const [editEmail, setEditEmail] = useState('');
   const [editCpf,   setEditCpf]   = useState('');
+  const [editSenhaAtual, setEditSenhaAtual] = useState('');
   const [editSenha, setEditSenha] = useState('');
+  const [senhaAtualVisivel, setSenhaAtualVisivel] = useState(false);
   const [senhaVisivel, setSenhaVisivel] = useState(false);
+  const [erroModal, setErroModal] = useState('');
+  const [salvandoEdicao, setSalvandoEdicao] = useState(false);
   const [campoVazio, setCampoVazio] = useState('');
 
   const inputFotoRef  = useRef(null);
@@ -145,10 +149,13 @@ export default function Perfil() {
   function abrirModalEditar() {
     setEditNome(perfilNome);
     setEditEmail(valorEmail);
+    setEditSenhaAtual('');
     setEditSenha('');
     setEditCpf('');
+    setErroModal('');
 
-    // garante que o campo volta pro modo oculto e o ícone volta pro olho aberto ao abrir o modal
+    // garante que os campos de senha voltam pro modo oculto e o ícone pro olho aberto ao abrir o modal
+    setSenhaAtualVisivel(false);
     setSenhaVisivel(false);
 
     // quando o banco estiver pronto, preencher o cpf real aqui
@@ -164,14 +171,47 @@ export default function Perfil() {
 
   // salva as alterações e atualiza a tela
   async function confirmarEditar() {
+    if (salvandoEdicao) return;
+    setErroModal('');
+
     // nome e email são obrigatórios
     if (!editNome.trim())  { destacarVazio('editNome');  return; }
     if (!editEmail.trim()) { destacarVazio('editEmail'); return; }
 
+    // troca de senha: só acontece se a "Nova senha" foi preenchida
+    const querTrocarSenha = editSenha !== '';
+    if (querTrocarSenha) {
+      if (!editSenhaAtual) {
+        destacarVazio('editSenhaAtual');
+        setErroModal('Informe a senha atual para trocar a senha.');
+        return;
+      }
+      if (editSenha.length < 6) {
+        destacarVazio('editSenha');
+        setErroModal('A nova senha deve ter pelo menos 6 caracteres.');
+        return;
+      }
+      if (editSenha === editSenhaAtual) {
+        destacarVazio('editSenha');
+        setErroModal('A nova senha precisa ser diferente da atual.');
+        return;
+      }
+    }
+
+    setSalvandoEdicao(true);
+    let senhaTrocada = false;
     try {
+      // a senha vai primeiro: se a senha atual estiver errada, nada é salvo
+      if (querTrocarSenha) {
+        await apiRequest('/auth/trocar-senha', {
+          method: 'POST',
+          body: { senha_atual: editSenhaAtual, senha_nova: editSenha }
+        });
+        senhaTrocada = true;
+      }
+
       // o backend (Supabase) atualiza o nome pelo /auth/profile;
-      // troca de e-mail e senha usam fluxos próprios, então por enquanto
-      // só o nome é persistido de fato aqui.
+      // troca de e-mail ainda não é persistida, só o nome.
       await apiRequest('/auth/profile', {
         method: 'PUT',
         body: { nome: editNome.trim() }
@@ -183,7 +223,16 @@ export default function Perfil() {
 
       fecharModalEditar();
     } catch (err) {
-      alert(err.message || 'Não foi possível salvar as alterações.');
+      if (senhaTrocada) {
+        // a senha já mudou: não deixa a pessoa tentar de novo com a senha antiga
+        setEditSenhaAtual('');
+        setEditSenha('');
+        setErroModal('Sua senha foi alterada, mas não foi possível salvar o nome. ' + (err.message || ''));
+      } else {
+        setErroModal(err.message || 'Não foi possível salvar as alterações.');
+      }
+    } finally {
+      setSalvandoEdicao(false);
     }
   }
 
@@ -219,9 +268,9 @@ export default function Perfil() {
       </header>
       <main className="perfil-conteudo">
 
-        <div className="perfil-layout">
+        <section className="perfil-cartao" aria-labelledby="perfilNome">
 
-          <div className="perfil-col-foto">
+          <div className="perfil-identidade">
             <div className="perfil-foto-ring">
 
               <div className="perfil-foto-placeholder" id="fotoPlaceholder" style={{ display: fotoSrc ? 'none' : '' }}>
@@ -233,51 +282,46 @@ export default function Perfil() {
 
               {fotoSrc && <img className="perfil-foto-img" id="fotoPerfilImg" src={fotoSrc} alt="" />}
 
-              <button className="perfil-foto-edit" id="btnEditarFoto" aria-label="Alterar foto" onClick={handleEditarFoto}>
-                <img src={editarfotoImg} className="icone-editarfoto" />
+              <button type="button" className="perfil-foto-edit" id="btnEditarFoto" aria-label="Alterar foto" onClick={handleEditarFoto}>
+                <img src={editarfotoImg} className="icone-editarfoto" alt="" />
               </button>
 
               <input type="file" id="inputFotoPerfil" ref={inputFotoRef} accept="image/*" style={{ display: 'none' }} onChange={handleFotoChange} />
 
             </div>
 
-            <span className="perfil-nome" id="perfilNome">{perfilNome}</span>
+            <h2 className="perfil-nome" id="perfilNome">{perfilNome}</h2>
             <span className="perfil-cargo">{salvandoFoto ? 'Salvando foto...' : 'Técnico'}</span>
-            <div className="perfil-divider"></div>
 
-            <button className="btn-sair" id="btnSair" onClick={handleSair}>
-              <img src={sairImg} className="icone-sair" />
+            <button type="button" className="btn-editar" id="btnEditar" onClick={abrirModalEditar}>
+              <img src={editarImg} className="icone-editar" alt="" />
+              Editar informações
+            </button>
+          </div>
+
+          <dl className="perfil-dados">
+            <div className="perfil-linha">
+              <dt className="perfil-campo-label">E-mail</dt>
+              <dd className="perfil-campo-valor" id="valorEmail">{valorEmail}</dd>
+            </div>
+            <div className="perfil-linha">
+              <dt className="perfil-campo-label">CPF</dt>
+              <dd className="perfil-campo-valor" id="valorCpf">{valorCpf}</dd>
+            </div>
+            <div className="perfil-linha">
+              <dt className="perfil-campo-label">Senha</dt>
+              <dd className="perfil-campo-valor">••••••••</dd>
+            </div>
+          </dl>
+
+          <div className="perfil-rodape-cartao">
+            <button type="button" className="btn-sair" id="btnSair" onClick={handleSair}>
+              <img src={sairImg} className="icone-sair" alt="" />
               Sair da conta
             </button>
           </div>
 
-          <div className="perfil-col-dados">
-            <div className="perfil-secao">
-              <div className="perfil-secao-titulo">Informações da conta</div>
-
-              <div className="perfil-campo">
-                <span className="perfil-campo-label">E-mail</span>
-                <span className="perfil-campo-valor" id="valorEmail">{valorEmail}</span>
-              </div>
-
-              <div className="perfil-campo">
-                <span className="perfil-campo-label">CPF</span>
-                <span className="perfil-campo-valor" id="valorCpf">{valorCpf}</span>
-              </div>
-
-              <div className="perfil-campo">
-                <span className="perfil-campo-label">Senha</span>
-                <span className="perfil-campo-valor">••••••••</span>
-              </div>
-            </div>
-
-            <button className="btn-editar" id="btnEditar" onClick={abrirModalEditar}>
-              <img src={editarImg} className="icone-editar" />
-              Editar Informações
-            </button>
-          </div>
-
-        </div>
+        </section>
 
       </main>
 
@@ -313,24 +357,46 @@ export default function Perfil() {
           </div>
 
           <div className="modal-campo">
+            <label className="modal-label" htmlFor="editSenhaAtual">
+              Senha atual
+              <span className="modal-label-obs">(só pra trocar a senha)</span>
+            </label>
+            <div className="modal-input-wrapper">
+              <input className="modal-input" type={senhaAtualVisivel ? 'text' : 'password'} id="editSenhaAtual" placeholder="••••••••"
+                autoComplete="current-password"
+                value={editSenhaAtual} onChange={e => { setEditSenhaAtual(e.target.value); setErroModal(''); }} style={vazioBorder('editSenhaAtual')} />
+              <button className="btn-ver-senha" type="button"
+                aria-label={senhaAtualVisivel ? 'Esconder senha atual' : 'Mostrar senha atual'}
+                onClick={() => setSenhaAtualVisivel(v => !v)}>
+                <img src={senhaAtualVisivel ? olhoFechadoImg : olhoImg} className="icone-olho" alt="" />
+              </button>
+            </div>
+          </div>
+
+          <div className="modal-campo">
             <label className="modal-label" htmlFor="editSenha">
               Nova senha
               <span className="modal-label-obs">(deixe em branco pra manter)</span>
             </label>
             <div className="modal-input-wrapper">
               <input className="modal-input" type={senhaVisivel ? 'text' : 'password'} id="editSenha" placeholder="••••••••"
-                value={editSenha} onChange={e => setEditSenha(e.target.value)} />
+                autoComplete="new-password"
+                value={editSenha} onChange={e => { setEditSenha(e.target.value); setErroModal(''); }} style={vazioBorder('editSenha')} />
               {/* VER SENHA */}
               {/* alterna entre mostrar e esconder a senha, trocando o ícone junto */}
-              <button className="btn-ver-senha" id="btnVerSenha" type="button" onClick={() => setSenhaVisivel(v => !v)}>
-                <img src={senhaVisivel ? olhoFechadoImg : olhoImg} id="iconeOlho" className="icone-olho" />
+              <button className="btn-ver-senha" id="btnVerSenha" type="button"
+                aria-label={senhaVisivel ? 'Esconder nova senha' : 'Mostrar nova senha'}
+                onClick={() => setSenhaVisivel(v => !v)}>
+                <img src={senhaVisivel ? olhoFechadoImg : olhoImg} id="iconeOlho" className="icone-olho" alt="" />
               </button>
             </div>
           </div>
 
+          {erroModal && <p className="modal-equipe-erro" role="alert">{erroModal}</p>}
+
           <div className="modal-acoes">
-            <button className="btn-modal-cancelar" id="btnEditarCancelar" onClick={fecharModalEditar}>Cancelar</button>
-            <button className="btn-modal-confirmar" id="btnEditarConfirmar" onClick={confirmarEditar}>Salvar</button>
+            <button type="button" className="btn-modal-cancelar" id="btnEditarCancelar" onClick={fecharModalEditar} disabled={salvandoEdicao}>Cancelar</button>
+            <button type="button" className="btn-modal-confirmar" id="btnEditarConfirmar" onClick={confirmarEditar} disabled={salvandoEdicao}>{salvandoEdicao ? 'Salvando…' : 'Salvar'}</button>
           </div>
 
         </div>
@@ -347,11 +413,12 @@ export default function Perfil() {
           <h2 className="modal-crop-titulo">Posicionar foto</h2>
           <div className="modal-crop-divisor"></div>
 
-          <div className="crop-area">
-            <img id="imagemCrop" ref={imagemCropRef} src={imagemCropSrc} alt="foto" />
+          <div className="crop-bloco">
+            <div className="crop-area">
+              <img id="imagemCrop" ref={imagemCropRef} src={imagemCropSrc} alt="foto" />
+            </div>
+            <p className="crop-dica">Arraste para ajustar o enquadramento</p>
           </div>
-
-          <p className="crop-dica">Arraste para ajustar o enquadramento</p>
 
           <div className="modal-crop-acoes">
             <button className="btn-crop-cancelar" id="btnCropCancelar" onClick={fecharModalCrop}>Cancelar</button>

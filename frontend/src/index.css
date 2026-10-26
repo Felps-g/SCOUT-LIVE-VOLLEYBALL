@@ -3,6 +3,35 @@
    Centraliza fontes e reset para React
 ═══════════════════════════════════════ */
 
+/* ═══════════════════════════════════════
+   ESCALA DE ESPAÇAMENTO (base 4px)
+   Todo padding/gap/margin dos modais usa estes valores,
+   pra nada ficar colado e tudo respirar do mesmo jeito.
+═══════════════════════════════════════ */
+:root {
+  --esp-1: 4px;
+  --esp-2: 8px;
+  --esp-3: 12px;
+  --esp-4: 16px;
+  --esp-5: 20px;
+  --esp-6: 24px;
+  --esp-8: 32px;
+
+  /* modais */
+  --modal-pad: var(--esp-6);          /* respiro interno do cartão */
+  --modal-gap: var(--esp-5);          /* entre blocos (campos, listas, botões) */
+  --modal-gap-fino: var(--esp-2);     /* label → campo, título → subtítulo */
+  --modal-gap-lista: var(--esp-2);    /* entre itens de uma lista */
+  --modal-borda-tela: var(--esp-4);   /* distância do cartão até a borda da tela */
+}
+
+@media (max-width: 600px) {
+  :root {
+    --modal-pad: var(--esp-5);
+    --modal-gap: var(--esp-4);
+  }
+}
+
 @font-face {
   font-family: 'Nexa';
   src: url('./assets/Nexa-ExtraLight.ttf') format('truetype');
@@ -32,7 +61,7 @@ html, body {
 }
 
 body {
-  background: #07101F;;
+  background: #07101F;
   color: #fff;
   font-family: 'Nexa', Arial, sans-serif;
   overflow: hidden;

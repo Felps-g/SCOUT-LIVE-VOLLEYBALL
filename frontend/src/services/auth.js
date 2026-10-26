@@ -3,7 +3,7 @@
 // que já é tratado em api.js) e oferece funções prontas pra usar nas telas.
 
 import { getAuthToken, clearAuthToken, apiRequest } from './api.js';
-import { USUARIO_KEY } from '../constants/storage.js';
+import { USUARIO_KEY, EQUIPE_PENDENTE_KEY } from '../constants/storage.js';
 
 // retorna o usuário salvo no localStorage (ou null se não tiver ninguém logado)
 export function getUsuarioLogado() {
@@ -30,6 +30,7 @@ export function salvarUsuarioLogado(usuario) {
 export function limparSessao() {
   clearAuthToken();
   localStorage.removeItem(USUARIO_KEY);
+  try { sessionStorage.removeItem(EQUIPE_PENDENTE_KEY); } catch { /* ignora */ }
 }
 
 // pega as iniciais do nome (ou do e-mail, se não tiver nome) pra mostrar no avatar

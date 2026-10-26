@@ -122,8 +122,10 @@ export const buscarJogador = async (req, res) => {
 // ============================================
 // POST /api/players
 // Header: Authorization: Bearer <token>
-// Body: { name, position, height, cpf, team_id, jersey_number?, rg?, age?, weight?, photo_url? }
-// Cria um novo registro de jogador no banco de dados
+// Body: { name, position, team_id, jersey_number?, height?, cpf?, rg?, age?, weight?, photo_url? }
+// Cria um novo registro de jogador no banco de dados.
+// Obrigatórios: name (ou nome), position e team_id. O restante é opcional e
+// pode ser preenchido depois pela edição do atleta.
 export const criarJogador = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -132,10 +134,10 @@ export const criarJogador = async (req, res) => {
     const nomeJogador = name || nome;
     const teamIdResolvido = team_id || teamId;
 
-    // Valida se todos os campos obrigatórios foram enviados
-    if (!nomeJogador || !position || !height || !cpf || !teamIdResolvido) {
+    // Valida se os campos obrigatórios foram enviados
+    if (!nomeJogador || !position || !teamIdResolvido) {
       return res.status(400).json({
-        mensagem: 'Todos os campos são obrigatórios: name (ou nome), position, height, cpf, team_id'
+        mensagem: 'Campos obrigatórios: name (ou nome), position, team_id'
       });
     }
 
@@ -158,10 +160,14 @@ export const criarJogador = async (req, res) => {
       id: uuid(),  // Gera um ID único usando uuid
       name: nomeJogador,
       position,
-      height,
-      cpf,
       team_id: teamIdResolvido
     };
+
+    // altura e CPF são opcionais. Só entram no insert se vierem preenchidos:
+    // `cpf` é UNIQUE no banco, então gravar string vazia em dois atletas
+    // daria conflito — ausente vira NULL, e NULL pode repetir.
+    if (height) novoJogador.height = height;
+    if (cpf) novoJogador.cpf = cpf;
 
     if (jersey_number !== undefined) {
       novoJogador.jersey_number = jersey_number;

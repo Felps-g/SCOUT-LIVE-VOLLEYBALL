@@ -4,11 +4,14 @@
 // Centraliza:
 // - chamadas reais à API para times e jogadores (com cache — ver cache.js)
 // - qual é o "time selecionado" no momento (persistido no localStorage
-//   para ser compartilhado entre Atletas, AdicionarAtletas e ScoutLive)
+//   para ser compartilhado entre Atletas, ModalAdicionarAtleta e ScoutLive)
 
 import { apiRequest } from './api.js';
 import { getCache, setCache, invalidarCache } from './cache.js';
-import { TIME_SELECIONADO_KEY as CHAVE_TIME_SELECIONADO } from '../constants/storage.js';
+import {
+  TIME_SELECIONADO_KEY as CHAVE_TIME_SELECIONADO,
+  EQUIPE_PENDENTE_KEY
+} from '../constants/storage.js';
 
 export function getTimeSelecionado() {
   try {
@@ -22,7 +25,26 @@ export function getTimeSelecionado() {
 export function setTimeSelecionado(time) {
   if (time && time.id) {
     localStorage.setItem(CHAVE_TIME_SELECIONADO, JSON.stringify(time));
+    // escolheu uma equipe (por qualquer tela) → o modal de "selecione sua
+    // equipe" do login não precisa mais aparecer
+    concluirSelecaoEquipe();
   }
+}
+
+// ── MODAL DE EQUIPE NO LOGIN ──────────────────
+// O modal só deve aparecer logo depois de logar. login() (AuthContext)
+// chama marcarSelecaoEquipePendente(); o modal só abre enquanto isso
+// estiver marcado, e a marca some quando uma equipe é selecionada.
+export function marcarSelecaoEquipePendente() {
+  try { sessionStorage.setItem(EQUIPE_PENDENTE_KEY, '1'); } catch { /* ignora */ }
+}
+
+export function selecaoEquipePendente() {
+  try { return sessionStorage.getItem(EQUIPE_PENDENTE_KEY) === '1'; } catch { return false; }
+}
+
+export function concluirSelecaoEquipe() {
+  try { sessionStorage.removeItem(EQUIPE_PENDENTE_KEY); } catch { /* ignora */ }
 }
 
 export function limparTimeSelecionado() {
