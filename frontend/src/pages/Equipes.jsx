@@ -1,17 +1,10 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import '../../css/equipes.css';
 import '../../css/ui-estados.css';
 import MenuHamburguer from '../components/MenuHamburguer.jsx';
-import maisImg from '../assets/IMG/mais.png';
-import casaImg from '../assets/IMG/casa.png';
-import cancelarImg from '../assets/IMG/cancelar.png';
-import selecionarImg from '../assets/IMG/selecione.png';
-import bolaImg from '../assets/IMG/bola.png';
 import atletasImg from '../assets/IMG/atletas.png';
-import salvarImg from '../assets/IMG/salvar.png';
-import lixeiraImg from '../assets/IMG/lixeira.png';
-import editarImg from '../assets/IMG/editar.png';
+import bolaImg from '../assets/IMG/bola.png';
 import MensagemErro from '../components/ui/MensagemErro.jsx';
 import EstadoVazio from '../components/ui/EstadoVazio.jsx';
 import {
@@ -23,6 +16,44 @@ import {
   setTimeSelecionado,
   limparTimeSelecionado
 } from '../services/time.js';
+
+/* ───────── ícones (SVG inline: herdam a cor do botão via currentColor) ───────── */
+
+function Svg({ children, size = 16, ...resto }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+      {...resto}
+    >
+      {children}
+    </svg>
+  );
+}
+
+const IconeCheck = props => <Svg {...props}><path d="M5 12.5l4.5 4.5L19 7.5" /></Svg>;
+const IconeX = props => <Svg {...props}><path d="M6 6l12 12M18 6L6 18" /></Svg>;
+const IconeMais = props => <Svg {...props}><path d="M12 5v14M5 12h14" /></Svg>;
+const IconeLapis = props => (
+  <Svg {...props}>
+    <path d="M4 20l4-1 11-11a2.1 2.1 0 00-3-3L5 16l-1 4z" />
+    <path d="M14.5 6.5l3 3" />
+  </Svg>
+);
+const IconeLixeira = props => (
+  <Svg {...props}>
+    <path d="M4 7h16M10 11v6M14 11v6" />
+    <path d="M6 7l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12M9 7V4h6v3" />
+  </Svg>
+);
 
 // spinner central exibido enquanto as equipes ainda não chegaram da API
 function CarregandoEquipes() {
@@ -38,11 +69,30 @@ function CarregandoEquipes() {
   );
 }
 
-// sugestões de categoria (autocomplete via <datalist> — não trava o
-// técnico num valor fixo, só ajuda a digitar mais rápido)
+// sugestões de categoria — viram atalhos clicáveis no formulário, mas o
+// técnico continua livre pra digitar qualquer outra categoria
 const CATEGORIAS_SUGERIDAS = ['Sub-15', 'Sub-17', 'Sub-19', 'Adulto Masculino', 'Adulto Feminino'];
 
+// monograma da equipe: iniciais + um tom fixo (derivado do id) dentro da
+// família azul/verde-água/índigo, pra cada equipe ser reconhecível de relance
+const TONS_EQUIPE = [212, 188, 252, 160];
+
+function iniciais(nome) {
+  const partes = (nome || '').trim().split(/\s+/).filter(Boolean);
+  if (partes.length === 0) return '?';
+  if (partes.length === 1) return partes[0].slice(0, 2).toUpperCase();
+  return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
+}
+
+function tomDaEquipe(chave) {
+  let h = 0;
+  for (const ch of String(chave)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return TONS_EQUIPE[h % TONS_EQUIPE.length];
+}
+
 export default function Equipes() {
+  const reduzirMovimento = useReducedMotion();
+
   const [times, setTimes] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
@@ -112,6 +162,13 @@ export default function Equipes() {
     }
   }
 
+  function fecharForm() {
+    setFormAberto(false);
+    setErroForm('');
+    setNome('');
+    setCategoria('');
+  }
+
   function iniciarEdicao(time) {
     setEditandoId(time.id);
     setNomeEditado(time.name);
@@ -163,6 +220,9 @@ export default function Equipes() {
     }
   }
 
+  const timeAtual = times.find(t => t.id === timeAtualId);
+  const mostrarLista = !carregando && !erro && times.length > 0;
+
   return (
     <div className="pagina-app">
       <MenuHamburguer />
@@ -170,63 +230,98 @@ export default function Equipes() {
         <h1 className="atletas-titulo">Equipes</h1>
       </div>
 
-      <main className="equipes-conteudo">
+      <main className="eq-conteudo">
 
-        {sucesso && <p className="equipes-sucesso">{sucesso}</p>}
-        {erroExclusao && <p className="equipes-erro">{erroExclusao}</p>}
+        {sucesso && (
+          <p className="eq-aviso eq-aviso--sucesso" role="status">
+            <IconeCheck size={16} />
+            {sucesso}
+          </p>
+        )}
+        {erroExclusao && <p className="eq-aviso eq-aviso--erro" role="alert">{erroExclusao}</p>}
 
-        {!formAberto && (
-          <button className="btn-adicionar" onClick={() => setFormAberto(true)}>
-            <img src={maisImg} className="btn-mais" alt="" />
-            Criar equipe
-          </button>
+        {/* barra de topo: quantas equipes + criar */}
+        {!carregando && !erro && (
+          <div className="eq-topo">
+            <p className="eq-resumo">
+              {times.length === 0
+                ? 'Nenhuma equipe ainda'
+                : times.length === 1 ? '1 equipe' : `${times.length} equipes`}
+            </p>
+            {!formAberto && (
+              <button type="button" className="eq-btn-criar" onClick={() => setFormAberto(true)}>
+                <IconeMais size={16} />
+                Criar equipe
+              </button>
+            )}
+          </div>
         )}
 
-        {formAberto && (
-          <form className="equipes-form" onSubmit={handleCriar}>
-            <div className="campo-grupo">
-              <label className="campo-label">Nome da equipe</label>
-              <input
-                type="text"
-                className="campo-input"
-                placeholder="Ex: Vôlei Vinhedo"
-                value={nome}
-                onChange={e => setNome(e.target.value)}
-                autoFocus
-              />
-            </div>
+        <AnimatePresence initial={false}>
+          {formAberto && (
+            <motion.form
+              key="form-criar"
+              className="eq-form"
+              onSubmit={handleCriar}
+              initial={reduzirMovimento ? false : { opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduzirMovimento ? { opacity: 0 } : { opacity: 0, y: -8 }}
+              transition={{ duration: 0.18 }}
+            >
+              <h2 className="eq-form-titulo">Nova equipe</h2>
 
-            <div className="campo-grupo">
-              <label className="campo-label">Categoria</label>
-              <input
-                type="text"
-                className="campo-input"
-                list="categorias-sugeridas"
-                placeholder="Ex: Sub-17"
-                value={categoria}
-                onChange={e => setCategoria(e.target.value)}
-              />
-              <datalist id="categorias-sugeridas">
-                {CATEGORIAS_SUGERIDAS.map(c => <option key={c} value={c} />)}
-              </datalist>
-            </div>
+              <div className="eq-campo">
+                <label className="eq-label" htmlFor="eq-nome">Nome da equipe</label>
+                <input
+                  id="eq-nome"
+                  type="text"
+                  className="eq-input"
+                  placeholder="Ex: Vôlei Vinhedo"
+                  value={nome}
+                  onChange={e => setNome(e.target.value)}
+                  autoFocus
+                />
+              </div>
 
-            {erroForm && <p className="equipes-erro">{erroForm}</p>}
+              <div className="eq-campo">
+                <label className="eq-label" htmlFor="eq-categoria">Categoria</label>
+                <input
+                  id="eq-categoria"
+                  type="text"
+                  className="eq-input"
+                  placeholder="Ex: Sub-17 ou outra categoria"
+                  value={categoria}
+                  onChange={e => setCategoria(e.target.value)}
+                />
+                <div className="eq-chips" role="group" aria-label="Categorias sugeridas">
+                  {CATEGORIAS_SUGERIDAS.map(c => (
+                    <button
+                      key={c}
+                      type="button"
+                      className={`eq-chip-opcao${categoria === c ? ' eq-chip-opcao--ativo' : ''}`}
+                      aria-pressed={categoria === c}
+                      onClick={() => setCategoria(c)}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-            <div className="equipes-form-acoes">
-              <button
-                type="button"
-                className="btn-cancelar"
-                onClick={() => { setFormAberto(false); setErroForm(''); setNome(''); setCategoria(''); }}
-              >
-                Cancelar
-              </button>
-              <button type="submit" className="btn-salvar-equipe" disabled={salvando}>
-                {salvando ? 'Salvando…' : 'Salvar equipe'}
-              </button>
-            </div>
-          </form>
-        )}
+              {erroForm && <p className="eq-aviso eq-aviso--erro" role="alert">{erroForm}</p>}
+
+              <div className="eq-form-acoes">
+                <button type="button" className="eq-btn-secundario" onClick={fecharForm}>
+                  Cancelar
+                </button>
+                <button type="submit" className="eq-btn-primario" disabled={salvando}>
+                  {!salvando && <IconeCheck size={16} />}
+                  {salvando ? 'Salvando…' : 'Salvar equipe'}
+                </button>
+              </div>
+            </motion.form>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence mode="wait">
           {carregando && (
@@ -242,118 +337,138 @@ export default function Equipes() {
           )}
         </AnimatePresence>
         <MensagemErro mensagem={erro} aoTentarNovamente={carregar} />
+
         {!carregando && !erro && times.length === 0 && !formAberto && (
-          <EstadoVazio texto="Você ainda não tem nenhuma equipe. Crie a primeira para começar a cadastrar atletas e jogos." />
+          <div className="eq-vazio">
+            <EstadoVazio texto="Você ainda não tem nenhuma equipe. Crie a primeira para começar a cadastrar atletas e jogos." />
+            <button type="button" className="eq-btn-primario" onClick={() => setFormAberto(true)}>
+              <IconeMais size={16} />
+              Criar primeira equipe
+            </button>
+          </div>
         )}
 
-        <div className="equipes-lista">
-          {times.map(time => {
-            const ativa = time.id === timeAtualId;
-            const editando = editandoId === time.id;
+        {mostrarLista && (
+          <ul className="eq-lista">
+            {times.map(time => {
+              const ativa = time.id === timeAtualId;
+              const editando = editandoId === time.id;
+              const excluindo = excluindoId === time.id;
 
-            return (
-              <div key={time.id} className={`equipe-card${ativa ? ' equipe-card--ativa' : ''}`}>
-
-                {editando ? (
-                  <form
-                    className="equipe-edicao-form"
-                    onSubmit={e => { e.preventDefault(); salvarEdicao(time); }}
+              return (
+                <li
+                  key={time.id}
+                  className={`eq-card${ativa ? ' eq-card--ativa' : ''}${editando ? ' eq-card--editando' : ''}`}
+                >
+                  <span
+                    className="eq-monograma"
+                    style={{ '--tom': tomDaEquipe(time.id ?? time.name) }}
+                    aria-hidden="true"
                   >
-                    <input
-                      type="text"
-                      className="equipe-edicao-input"
-                      value={nomeEditado}
-                      onChange={e => setNomeEditado(e.target.value)}
-                      autoFocus
-                    />
+                    {iniciais(editando ? nomeEditado || time.name : time.name)}
+                  </span>
 
-                    {erroEdicao && <span className="equipes-erro equipes-erro--inline">{erroEdicao}</span>}
-
-                    <div className="equipe-edicao-acoes">
-                      <button
-                        type="button"
-                        className="btn-icone btn-icone--cancelar"
-                        onClick={cancelarEdicao}
-                        title="Cancelar edição"
-                      >
-                        <img src={cancelarImg} className="icone-cancelar-edicao" alt="" />
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn-icone btn-icone--salvar"
-                        disabled={salvandoEdicao}
-                        title="Salvar novo nome"
-                      >
-                        {/* ícone mascarado: pega a cor verde do próprio botão em vez do branco original */}
-                        <span
-                          className="icone-salvar-edicao icone-mascarado"
-                          style={{ WebkitMaskImage: `url(${salvarImg})`, maskImage: `url(${salvarImg})` }}
+                  {editando ? (
+                    <form
+                      className="eq-edicao"
+                      onSubmit={e => { e.preventDefault(); salvarEdicao(time); }}
+                    >
+                      <div className="eq-edicao-campo">
+                        <label className="eq-label" htmlFor={`eq-edit-${time.id}`}>Nome da equipe</label>
+                        <input
+                          id={`eq-edit-${time.id}`}
+                          type="text"
+                          className="eq-input"
+                          value={nomeEditado}
+                          onChange={e => setNomeEditado(e.target.value)}
+                          autoFocus
                         />
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <>
-                    <span className="equipe-nome">{time.name}</span>
+                        {erroEdicao && <span className="eq-erro-inline" role="alert">{erroEdicao}</span>}
+                      </div>
 
-                    <div className="equipe-card-acoes">
-                      <button
-                        className="btn-icone btn-icone--editar"
-                        onClick={() => iniciarEdicao(time)}
-                        title="Editar equipe"
-                      >
-                        {/* ícone mascarado: pega a cor azul do próprio botão em vez do branco original */}
-                        <span
-                          className="icone-editar-equipe icone-mascarado"
-                          style={{ WebkitMaskImage: `url(${editarImg})`, maskImage: `url(${editarImg})` }}
-                        />
-                      </button>
+                      <div className="eq-edicao-acoes">
+                        <button
+                          type="button"
+                          className="eq-icone eq-icone--cancelar"
+                          onClick={cancelarEdicao}
+                          title="Cancelar edição"
+                          aria-label="Cancelar edição"
+                        >
+                          <IconeX size={18} />
+                        </button>
+                        <button
+                          type="submit"
+                          className="eq-icone eq-icone--salvar"
+                          disabled={salvandoEdicao}
+                          title="Salvar novo nome"
+                          aria-label="Salvar novo nome"
+                        >
+                          <IconeCheck size={18} />
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <>
+                      <div className="eq-info">
+                        <span className="eq-nome">{time.name}</span>
+                        {time.category && <span className="eq-categoria">{time.category}</span>}
+                      </div>
 
-                      <button
-                        className={`btn-selecionar${ativa ? ' btn-selecionar--ativa' : ''}`}
-                        onClick={() => selecionar(time)}
-                      >
-                        <img src={selecionarImg} className="icone-selecionar" alt="" />
-                        Selecionar
-                      </button>
+                      <div className="eq-acoes">
+                        <button
+                          type="button"
+                          className="eq-icone eq-icone--editar"
+                          onClick={() => iniciarEdicao(time)}
+                          title="Editar equipe"
+                          aria-label={`Editar ${time.name}`}
+                        >
+                          <IconeLapis size={16} />
+                        </button>
 
-                      <button
-                        className="btn-excluir"
-                        onClick={() => excluir(time)}
-                        disabled={excluindoId === time.id}
-                      >
-                        <img src={lixeiraImg} className="icone-excluir" alt="" />
-                        {excluindoId === time.id ? 'Excluindo…' : 'Excluir'}
-                      </button>
-                    </div>
+                        <button
+                          type="button"
+                          className="eq-icone eq-icone--excluir"
+                          onClick={() => excluir(time)}
+                          disabled={excluindo}
+                          title={excluindo ? 'Excluindo…' : 'Excluir equipe'}
+                          aria-label={excluindo ? 'Excluindo…' : `Excluir ${time.name}`}
+                        >
+                          <IconeLixeira size={16} />
+                        </button>
 
-                  </>
-                )}
+                        <button
+                          type="button"
+                          className={`eq-btn-selecionar${ativa ? ' eq-btn-selecionar--ativa' : ''}`}
+                          onClick={() => selecionar(time)}
+                          aria-pressed={ativa}
+                        >
+                          {ativa && <IconeCheck size={15} />}
+                          {ativa ? 'Selecionada' : 'Selecionar'}
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
 
-                {ativa && !editando && (
-                  <div className="equipe-selecionada-aviso">
-                    Equipe selecionada com sucesso
-                  </div>
-                )}
-
-              </div>
-            );
-          })}
-        </div>
-
-        {timeAtualId && (
-          <div className="equipes-gerenciar">
-            <span className="equipes-gerenciar-titulo">Gerenciar equipe selecionada</span>
-            <div className="equipes-gerenciar-links">
-              <a href="#/app/atletas" className="equipes-gerenciar-item">
-                <img src={atletasImg} className="icone-atletas-gerenciar" alt="" />
+        {timeAtualId && mostrarLista && (
+          <section className="eq-atalhos" aria-label="Atalhos da equipe selecionada">
+            <h2 className="eq-atalhos-titulo">
+              Gerenciar {timeAtual ? timeAtual.name : 'equipe selecionada'}
+            </h2>
+            <div className="eq-atalhos-grade">
+              <a href="#/app/atletas" className="eq-atalho">
+                <img src={atletasImg} className="eq-atalho-icone" alt="" />
                 Atletas
               </a>
-              <a href="#/app/jogos" className="equipes-gerenciar-item">
-                <img src={bolaImg} className="icone-jogos-gerenciar" alt="" />
+              <a href="#/app/jogos" className="eq-atalho">
+                <img src={bolaImg} className="eq-atalho-icone" alt="" />
                 Jogos
               </a>
-              <a href="#/app/scout" className="equipes-gerenciar-item">
+              <a href="#/app/scout" className="eq-atalho">
                 {/* mesmo ícone do "Scout Live" usado na tela inicial */}
                 <svg
                   viewBox="0 0 24 24"
@@ -362,7 +477,8 @@ export default function Equipes() {
                   strokeWidth="1.8"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="icone-scout-vivo-gerenciar"
+                  className="eq-atalho-icone"
+                  aria-hidden="true"
                 >
                   <circle cx="12" cy="12" r="10" />
                   <circle cx="12" cy="12" r="4" fill="#e8273a" stroke="none" />
@@ -370,11 +486,10 @@ export default function Equipes() {
                 Scout ao vivo
               </a>
             </div>
-          </div>
+          </section>
         )}
 
       </main>
-
     </div>
   );
 }

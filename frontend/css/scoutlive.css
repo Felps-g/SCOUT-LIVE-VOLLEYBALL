@@ -61,9 +61,12 @@ button { font-family: inherit; }
 }
 
 .escalacao-content {
+  /* folga entre a barra de ação e a borda da tela */
+  --er-folga: calc(20px + env(safe-area-inset-bottom, 0px));
+
   width: 100%;
   max-width: 640px;
-  padding: 28px 24px calc(56px + env(safe-area-inset-bottom, 0px));
+  padding: 28px 24px var(--er-folga);
   display: flex;
   flex-direction: column;
 }
@@ -93,21 +96,19 @@ button { font-family: inherit; }
   flex-wrap: wrap;
   background: #0b1730;
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 10px;
-  padding: 10px 14px;
+  border-radius: 12px;
+  padding: 12px 16px;
   margin-bottom: 16px;
 }
 
 .escalacao-time-atual-rotulo {
-  font-size: 11px;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
   color: rgba(255,255,255,0.5);
 }
 
 .escalacao-time-atual-nome {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: #fff;
 }
@@ -124,19 +125,40 @@ button { font-family: inherit; }
 }
 .escalacao-time-atual-vazio a:hover { text-decoration: underline; }
 
-
-.escalacao-contador {
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.4px;
-  color: #4d9fff;
-  margin-bottom: 14px;
+/* vagas por posição — mostra o que ainda falta preencher */
+.escalacao-vagas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
 }
+
+.ev-vaga {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.ev-vaga-qtd { color: rgba(255,255,255,0.9); }
+
+.ev-vaga.completa {
+  color: #3ddc97;
+  border-color: rgba(61,220,151,0.4);
+  background: rgba(61,220,151,0.08);
+}
+.ev-vaga.completa .ev-vaga-qtd { color: #3ddc97; }
 
 .escalacao-lista {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 24px;
 }
 
@@ -149,20 +171,21 @@ button { font-family: inherit; }
 .escalacao-msg--erro { color: #ff6b7a; }
 
 .escalacao-jogador {
+  position: relative;
   background: #0b1730;
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  padding: 16px 18px;
+  border-radius: 14px;
+  padding: 14px 18px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  transition: border-color 0.18s, background 0.18s;
+  transition: border-color 0.15s, background 0.15s;
 }
 
 .escalacao-jogador.selecionado {
-  border-color: rgba(45,127,255,0.45);
+  border-color: rgba(45,127,255,0.5);
   background: #0d1c38;
 }
 
@@ -173,19 +196,25 @@ button { font-family: inherit; }
   min-width: 0;
 }
 
-.ej-radio {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.25);
+/* número da camisa (do cadastro) — vira azul quando o atleta é titular */
+.ej-numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
   flex-shrink: 0;
-  transition: background 0.18s, border-color 0.18s;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.85);
+  font-size: 1rem;
+  font-weight: 800;
+  transition: background 0.15s, color 0.15s;
 }
 
-.ej-radio.marcado {
-  border-color: #2d7fff;
-  background: #2d7fff;
-  box-shadow: inset 0 0 0 3px #0b1730;
+.escalacao-jogador.selecionado .ej-numero {
+  background: #1a62e6;
+  color: #fff;
 }
 
 .ej-textos {
@@ -199,11 +228,12 @@ button { font-family: inherit; }
   font-size: 1rem;
   font-weight: 700;
   color: #fff;
+  overflow-wrap: anywhere;
 }
 
 .ej-cadastro {
   font-size: 0.78rem;
-  color: rgba(255,255,255,0.42);
+  color: rgba(255,255,255,0.5);
 }
 
 .ej-posicoes {
@@ -216,9 +246,9 @@ button { font-family: inherit; }
 }
 
 .ej-btn-pos {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 20px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 999px;
   padding: 7px 15px;
   font-size: 0.78rem;
   font-weight: 700;
@@ -228,40 +258,91 @@ button { font-family: inherit; }
   white-space: nowrap;
 }
 
-.ej-btn-pos:hover:not(:disabled) { background: rgba(255,255,255,0.10); }
+.ej-btn-pos:hover:not(:disabled) { background: rgba(255,255,255,0.08); color: #fff; }
 
 .ej-btn-pos.ativo {
-  background: linear-gradient(135deg, #1a5dc8, #2d7fff);
-  border-color: transparent;
+  background: #1a62e6;
+  border-color: #1a62e6;
   color: #fff;
 }
 
 .ej-btn-pos:disabled {
-  opacity: 0.35;
+  opacity: 0.3;
   cursor: not-allowed;
+}
+
+/* barra de ação: acompanha a rolagem e fica sempre visível, com folga
+   entre ela e a borda de baixo da tela */
+.escalacao-rodape {
+  position: sticky;
+  bottom: var(--er-folga);
+  z-index: 5;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 12px 12px 18px;
+  background: #0b1730;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+}
+
+.er-progresso {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.er-texto {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.er-barra {
+  height: 4px;
+  max-width: 260px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+
+.er-barra-preenchida {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #4d9fff;
+  transition: width 0.2s;
 }
 
 .btn-iniciar-scout {
-  background: linear-gradient(135deg, #1a5dc8, #2d7fff);
+  flex-shrink: 0;
+  background: #1a62e6;
   border: none;
-  border-radius: 14px;
-  padding: 16px;
-  margin-top: 20px;
+  border-radius: 12px;
+  padding: 14px 28px;
   color: #fff;
   font-size: 0.95rem;
   font-weight: 800;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
   cursor: pointer;
-  transition: opacity 0.18s, transform 0.1s;
+  transition: background 0.15s;
 }
 
-.btn-iniciar-scout:hover:not(:disabled) { opacity: 0.88; }
-.btn-iniciar-scout:active:not(:disabled) { transform: scale(0.98); }
+.btn-iniciar-scout:hover:not(:disabled) { background: #2a72f5; }
 
 .btn-iniciar-scout:disabled {
   background: rgba(255,255,255,0.07);
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.35);
   cursor: not-allowed;
+}
+
+.escalacao-content button:focus-visible {
+  outline: 2px solid #4d9fff;
+  outline-offset: 2px;
 }
 
 
@@ -832,7 +913,7 @@ button { font-family: inherit; }
 ═══════════════════════════════════════════════════════════ */
 
 @media (min-width: 900px) {
-  .escalacao-content { padding: 40px 40px 56px; max-width: 900px; }
+  .escalacao-content { padding: 40px 40px var(--er-folga); max-width: 900px; }
 
   .ej-posicoes { min-width: 260px; }
 
@@ -886,7 +967,7 @@ button { font-family: inherit; }
 ═══════════════════════════════════════════════════════════ */
 
 @media (min-width: 1300px) {
-  .escalacao-content { max-width: 1240px; padding: 48px 48px 64px; }
+  .escalacao-content { max-width: 1240px; padding: 48px 48px var(--er-folga); }
 
   .escalacao-titulo { font-size: 1.75rem; }
   .escalacao-sub { font-size: 0.98rem; max-width: 720px; }
@@ -963,7 +1044,19 @@ button { font-family: inherit; }
   .header { height: 72px; }
   .titulo-simples { font-size: 16px; letter-spacing: 2px; }
 
-  .escalacao-content { padding: 20px 16px calc(48px + env(safe-area-inset-bottom, 0px)); }
+  .escalacao-content {
+    --er-folga: calc(14px + env(safe-area-inset-bottom, 0px));
+    padding: 20px 16px var(--er-folga);
+  }
+
+  /* barra de ação no celular: compacta, texto/progresso à esquerda e botão
+     à direita, pra não tomar altura da lista */
+  .escalacao-rodape {
+    gap: 12px;
+    padding: 10px 10px 10px 14px;
+  }
+  .er-texto { font-size: 0.8rem; }
+  .btn-iniciar-scout { padding: 12px 18px; font-size: 0.88rem; }
   .escalacao-titulo { font-size: 1.25rem; }
   .escalacao-sub { font-size: 0.82rem; }
 
@@ -998,6 +1091,8 @@ button { font-family: inherit; }
 }
 
 @media (max-width: 380px) {
+  .escalacao-rodape { gap: 8px; padding-left: 12px; }
+  .btn-iniciar-scout { padding: 12px 14px; font-size: 0.82rem; }
   .lj-numero { width: 30px; height: 30px; font-size: 0.8rem; }
   .lj-fpill { font-size: 0.6rem; padding: 2px 4px; }
   .lj-flabel { font-size: 0.56rem; }

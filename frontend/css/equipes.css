@@ -1,3 +1,490 @@
+/* ════════════════════════════════════════════════════════
+   TELA DE EQUIPES
+   Tudo da página usa o prefixo "eq-" para não colidir com
+   as outras telas (atletas, jogos, perfil...).
+════════════════════════════════════════════════════════ */
+
+.eq-conteudo {
+  --eq-superficie: #0b1730;
+  --eq-superficie-alta: #101f3f;
+  --eq-campo: #060d1c;
+  --eq-borda: rgba(255, 255, 255, 0.09);
+  --eq-borda-forte: rgba(255, 255, 255, 0.18);
+  --eq-azul: #2d7fff;
+  --eq-azul-claro: #4d9fff;
+  --eq-verde: #3ddc97;
+  --eq-vermelho: #ff6b7a;
+  --eq-texto-suave: rgba(255, 255, 255, 0.62);
+
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 64px 32px;
+  overflow-y: auto;
+  min-height: 0;
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ───────── avisos (sucesso / erro) ───────── */
+
+.eq-aviso {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.eq-aviso--sucesso {
+  background: rgba(61, 220, 151, 0.1);
+  border: 1px solid rgba(61, 220, 151, 0.3);
+  color: var(--eq-verde);
+}
+
+.eq-aviso--erro {
+  background: rgba(255, 107, 122, 0.1);
+  border: 1px solid rgba(255, 107, 122, 0.3);
+  color: var(--eq-vermelho);
+}
+
+/* ───────── barra de topo ───────── */
+
+.eq-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 40px;
+}
+
+.eq-resumo {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ───────── botões principais ───────── */
+
+.eq-btn-criar,
+.eq-btn-primario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #1a62e6;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-family: 'Nexa', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.eq-btn-criar:hover,
+.eq-btn-primario:hover:not(:disabled) { background: #2a72f5; }
+.eq-btn-primario:disabled { opacity: 0.6; cursor: default; }
+
+.eq-btn-secundario {
+  background: transparent;
+  border: 1px solid var(--eq-borda-forte);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-family: 'Nexa', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.eq-btn-secundario:hover { background: rgba(255, 255, 255, 0.07); }
+
+/* ───────── formulário de criação ───────── */
+
+.eq-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px;
+  background: var(--eq-superficie);
+  border: 1px solid var(--eq-borda);
+  border-radius: 14px;
+}
+
+.eq-form-titulo {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.eq-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.eq-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--eq-texto-suave);
+}
+
+.eq-input {
+  width: 100%;
+  background: var(--eq-campo);
+  border: 1px solid var(--eq-borda-forte);
+  border-radius: 10px;
+  color: #fff;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+.eq-input::placeholder { color: rgba(255, 255, 255, 0.32); }
+.eq-input:focus {
+  outline: none;
+  border-color: var(--eq-azul-claro);
+}
+
+.eq-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.eq-chip-opcao {
+  background: transparent;
+  border: 1px solid var(--eq-borda-forte);
+  color: var(--eq-texto-suave);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.eq-chip-opcao:hover { color: #fff; border-color: rgba(77, 159, 255, 0.5); }
+.eq-chip-opcao--ativo {
+  background: rgba(45, 127, 255, 0.18);
+  border-color: var(--eq-azul);
+  color: #fff;
+}
+
+.eq-form-acoes {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* ───────── estado vazio ───────── */
+
+.eq-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 24px;
+  background: var(--eq-superficie);
+  border: 1px dashed var(--eq-borda-forte);
+  border-radius: 14px;
+}
+.eq-vazio .ui-vazio { padding: 0 0 12px; }
+
+/* ───────── lista de equipes ───────── */
+
+.eq-lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.eq-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px 16px 22px;
+  background: var(--eq-superficie);
+  border: 1px solid var(--eq-borda);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.eq-card:hover { border-color: var(--eq-borda-forte); }
+
+/* faixa lateral: só aparece na equipe selecionada */
+.eq-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.eq-card--ativa {
+  border-color: rgba(45, 127, 255, 0.45);
+  background: #0d1c3a;
+}
+.eq-card--ativa::before { background: #2d7fff; }
+
+/* monograma — iniciais da equipe */
+.eq-monograma {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: hsl(var(--tom) 40% 18%);
+  border: none;
+  color: hsl(var(--tom) 80% 78%);
+  font-family: 'Nexa', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+.eq-card--ativa .eq-monograma {
+  background: #1a62e6;
+  color: #fff;
+}
+
+.eq-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.eq-nome {
+  max-width: 100%;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+
+.eq-categoria {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--eq-borda);
+  color: var(--eq-texto-suave);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ───────── ações do card ───────── */
+
+.eq-acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eq-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--eq-borda-forte);
+  border-radius: 10px;
+  color: var(--eq-texto-suave);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.eq-icone:disabled { opacity: 0.55; cursor: default; }
+
+.eq-icone--editar { color: var(--eq-azul-claro); border-color: rgba(77, 159, 255, 0.4); }
+.eq-icone--editar:hover { background: rgba(45, 127, 255, 0.14); }
+
+.eq-icone--excluir { color: var(--eq-vermelho); border-color: rgba(255, 107, 122, 0.4); }
+.eq-icone--excluir:hover:not(:disabled) { background: rgba(255, 107, 122, 0.14); }
+
+/* salvar edição: o botão verde, agora com o ícone de certo */
+.eq-icone--salvar {
+  color: #04140c;
+  background: var(--eq-verde);
+  border-color: var(--eq-verde);
+}
+.eq-icone--salvar:hover:not(:disabled) { background: #55e3a3; border-color: #55e3a3; }
+
+.eq-icone--cancelar { color: var(--eq-vermelho); border-color: rgba(255, 107, 122, 0.4); }
+.eq-icone--cancelar:hover { background: rgba(255, 107, 122, 0.14); }
+
+.eq-btn-selecionar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 118px;
+  height: 38px;
+  padding: 0 16px;
+  background: transparent;
+  border: 1px solid rgba(45, 127, 255, 0.5);
+  border-radius: 10px;
+  color: var(--eq-azul-claro);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.eq-btn-selecionar:hover { background: rgba(45, 127, 255, 0.14); }
+
+.eq-btn-selecionar--ativa {
+  background: #1a62e6;
+  border-color: #1a62e6;
+  color: #fff;
+}
+.eq-btn-selecionar--ativa:hover { background: #2a72f5; }
+
+/* ───────── edição inline ───────── */
+
+.eq-edicao {
+  grid-column: 2 / -1;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.eq-edicao-campo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eq-edicao-acoes {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+/* alinha os botões com a base do campo de texto */
+.eq-edicao-acoes .eq-icone { width: 46px; height: 46px; }
+
+.eq-erro-inline {
+  color: var(--eq-vermelho);
+  font-size: 12px;
+}
+
+/* ───────── atalhos da equipe selecionada ───────── */
+
+.eq-atalhos {
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--eq-borda);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.eq-atalhos-titulo {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+
+.eq-atalhos-grade {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.eq-atalho {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 10px;
+  background: var(--eq-superficie);
+  border: 1px solid var(--eq-borda);
+  border-radius: 14px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  transition: border-color 0.15s;
+}
+.eq-atalho:hover { border-color: rgba(45, 127, 255, 0.5); }
+
+.eq-atalho-icone {
+  display: block;
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+/* foco visível pra navegação por teclado */
+.eq-conteudo button:focus-visible,
+.eq-conteudo a:focus-visible,
+.eq-conteudo .eq-input:focus-visible {
+  outline: 2px solid var(--eq-azul-claro);
+  outline-offset: 2px;
+}
+
+/* ───────── mobile ───────── */
+
+@media (max-width: 600px) {
+  .eq-conteudo { padding: 16px 14px 24px; }
+  .eq-form { padding: 16px; }
+}
+
+@media (max-width: 520px) {
+  .eq-card {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px;
+    padding: 14px 14px 14px 18px;
+  }
+
+  .eq-acoes {
+    grid-column: 1 / -1;
+  }
+  .eq-btn-selecionar { flex: 1; order: -1; }
+
+  .eq-edicao {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .eq-edicao-acoes { justify-content: flex-end; }
+  .eq-edicao-acoes .eq-icone { width: 42px; height: 42px; }
+
+  .eq-form-acoes > * { flex: 1; }
+
+  .eq-atalhos-grade { grid-template-columns: 1fr; }
+  .eq-atalho { flex-direction: row; justify-content: flex-start; padding: 14px 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eq-conteudo * { transition: none !important; }
+}
+
+
+/* ════════════════════════════════════════════════════════
+   REGRAS COMPARTILHADAS COM OUTRAS TELAS
+   (mantidas como estavam — não mexer sem testar Atletas,
+   Perfil, Login, Jogos e Detalhe do Jogo)
+════════════════════════════════════════════════════════ */
+
 /* título — mesmo padrão das outras telas */
 
 .atletas-titulo-wrapper {
@@ -21,26 +508,7 @@
   text-align: center;
 }
 
-.equipes-subtitulo {
-  margin-top: 6px;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.55);
-}
-
-.equipes-conteudo {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 20px 64px;
-  overflow-y: auto;
-  min-height: 0;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-}
-
-/* botão "criar equipe" */
+/* botão "adicionar" (usado também em Atletas) */
 
 .btn-adicionar {
   display: flex;
@@ -63,35 +531,7 @@
 .btn-adicionar:hover { opacity: 0.88; }
 .btn-mais { width: 16px; height: 16px; }
 
-.equipes-sucesso {
-  background: rgba(45, 200, 120, 0.12);
-  border: 1px solid rgba(45, 200, 120, 0.3);
-  color: #6fe3a3;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-size: 13px;
-}
-
-.equipes-erro {
-  color: #ff6b7a;
-  font-size: 13px;
-}
-
-.equipes-erro--inline {
-  display: block;
-}
-
-/* formulário de criação */
-
-.equipes-form {
-  background: #0b1730;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
+/* campos de formulário (usados também em Perfil e Login) */
 
 .campo-grupo {
   display: flex;
@@ -118,174 +558,7 @@
 }
 .campo-input:focus { outline: none; border-color: #4d9fff; }
 
-.equipes-form-acoes {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-.btn-cancelar {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.2);
-  color: #fff;
-  border-radius: 8px;
-  padding: 9px 16px;
-  font-family: inherit;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.btn-salvar-equipe {
-  background: linear-gradient(135deg, #0e4385, #0062ff);
-  border: none;
-  color: #fff;
-  border-radius: 8px;
-  padding: 9px 18px;
-  font-family: inherit;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-}
-.btn-salvar-equipe:disabled { opacity: 0.6; cursor: default; }
-
-/* ════════════════════════════════
-   LISTA DE EQUIPES
-════════════════════════════════ */
-
-.equipes-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.equipe-card {
-  position: relative;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.equipe-card--ativa {
-  border-color: rgba(45,127,255,0.5);
-  background: rgba(45,127,255,0.08);
-}
-
-.equipe-nome {
-  font-weight: 700;
-  color: #fff;
-  font-size: 15px;
-}
-
-/* grupo de botões de ação (editar / selecionar / excluir) */
-
-.equipe-card-acoes {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-/* botão quadrado só com ícone — usado no "editar equipe" e na
-   confirmação/cancelamento da edição inline */
-
-.btn-icone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.18);
-  border-radius: 8px;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 0.2s, border-color 0.2s;
-}
-.btn-icone:hover { background: rgba(255,255,255,0.08); }
-.btn-icone:disabled { opacity: 0.6; cursor: default; }
-
-.btn-icone--editar {
-  border-color: rgba(45,127,255,0.4);
-}
-.btn-icone--editar:hover { background: rgba(45,127,255,0.12); }
-
-.btn-icone--salvar {
-  border-color: rgba(45,200,120,0.4);
-}
-.btn-icone--salvar:hover { background: rgba(45,200,120,0.12); }
-
-.btn-icone--cancelar {
-  border-color: rgba(255,107,122,0.4);
-}
-.btn-icone--cancelar:hover { background: rgba(255,107,122,0.12); }
-
-/* — ícone dentro do botão "editar equipe" (lápis) —
-   classe pra usar no seu ícone: .icone-editar-equipe */
-.icone-editar-equipe {
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-}
-
-/* — ícone dentro do botão "salvar" da edição inline (check/disquete) —
-   classe: .icone-salvar-edicao */
-.icone-salvar-edicao {
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-}
-
-/* — ícone dentro do botão "cancelar" da edição inline (x) —
-   classe: .icone-cancelar-edicao */
-.icone-cancelar-edicao {
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-}
-
-/* botão "Selecionar" */
-
-.btn-selecionar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: transparent;
-  border: 1px solid rgba(45,127,255,0.4);
-  color: #4d9fff;
-  border-radius: 8px;
-  padding: 7px 14px;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.2s, color 0.2s;
-}
-.btn-selecionar:hover { background: rgba(45,127,255,0.1); }
-
-/* quando é a equipe já selecionada, o botão fica "preenchido" —
-   continua clicável, mas indica visualmente qual é a atual */
-.btn-selecionar--ativa {
-  background: linear-gradient(135deg, #0e4385, #0062ff);
-  border-color: transparent;
-  color: #fff;
-}
-.btn-selecionar--ativa:hover { opacity: 0.9; background: linear-gradient(135deg, #0e4385, #0062ff); }
-
-/* — ícone dentro do botão "Selecionar" — classe: .icone-selecionar */
-.icone-selecionar {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-}
-
-/* botão "Excluir" */
+/* botão "Excluir" (também usado no Detalhe do Jogo) */
 
 .btn-excluir {
   display: flex;
@@ -305,128 +578,6 @@
 }
 .btn-excluir:hover { background: rgba(255,107,122,0.1); }
 .btn-excluir:disabled { opacity: 0.6; cursor: default; }
-
-/* — ícone dentro do botão "Excluir" (lixeira) — classe: .icone-excluir */
-.icone-excluir {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-}
-
-/* selo de "equipe selecionada" — círculo que fica sobre a borda
-   direita do card, como um crachá */
-
-.equipe-check-badge {
-  position: absolute;
-  top: 50%;
-  right: -8px;
-  transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #2d7fff;
-  border: 2px solid #050d1f;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* — ícone de check dentro do selo — classe: .icone-check-selecionada */
-.icone-check-selecionada {
-  display: inline-block;
-  width: 11px;
-  height: 11px;
-}
-
-/* edição inline do nome da equipe */
-
-.equipe-edicao-form {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-  flex-wrap: wrap;
-}
-
-.equipe-edicao-input {
-  flex: 1;
-  min-width: 140px;
-  background: #060d1c;
-  border: 1px solid rgba(77,159,255,0.5);
-  border-radius: 8px;
-  color: #fff;
-  padding: 8px 12px;
-  font-size: 14px;
-  font-family: inherit;
-}
-.equipe-edicao-input:focus { outline: none; border-color: #4d9fff; }
-
-.equipe-edicao-acoes {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-/* ════════════════════════════════
-   GERENCIAR EQUIPE SELECIONADA
-════════════════════════════════ */
-
-.equipes-gerenciar {
-  margin-top: 8px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255,255,255,0.08);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.equipes-gerenciar-titulo {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
-}
-
-.equipes-gerenciar-links {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.equipes-gerenciar-item {
-  flex: 1;
-  min-width: 100px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: #fff;
-  text-decoration: none;
-  padding: 16px 10px;
-  border-radius: 14px;
-  font-size: 12px;
-  font-weight: 700;
-  text-align: center;
-  transition: background 0.2s, border-color 0.2s;
-}
-.equipes-gerenciar-item:hover {
-  background: rgba(45,127,255,0.1);
-  border-color: rgba(45,127,255,0.3);
-}
-
-/* — ícones dos atalhos "Atletas" / "Jogos" / "Scout ao vivo" —
-   classes: .icone-atletas-gerenciar / .icone-jogos-gerenciar / .icone-scout-vivo-gerenciar */
-.icone-atletas-gerenciar,
-.icone-jogos-gerenciar,
-.icone-scout-vivo-gerenciar {
-  display: inline-block;
-  width: 22px;
-  height: 22px;
-}
 
 /* rodapé — mesmo padrão das outras telas */
 
@@ -462,10 +613,6 @@
 
 .icone-casa { width: 18px; height: 18px; stroke: #4d9fff; }
 
-/* ════════════════════════════════
-   MOBILE — evita que os 3 botões de ação espremam ao lado do nome
-════════════════════════════════ */
-
 @media (max-width: 600px) {
   .atletas-titulo-wrapper {
     height: 72px;
@@ -476,38 +623,7 @@
     font-size: 16px;
     letter-spacing: 2px;
   }
-
-  .equipes-conteudo {
-    padding: 14px;
-  }
 }
-
-@media (max-width: 480px) {
-  .equipe-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .equipe-card-acoes {
-    width: 100%;
-  }
-
-  .btn-selecionar,
-  .btn-excluir {
-    flex: 1;
-    justify-content: center;
-  }
-
-  .equipe-check-badge {
-    top: -8px;
-    right: 12px;
-    transform: none;
-  }
-}
-
-/* ===== Regras adicionais mantidas do fork do Felipe (funcionalidades novas) ===== */
-
-
 
 /* spinner de carregamento (framer-motion) */
 
@@ -520,8 +636,6 @@
   padding: 50px 16px;
 }
 
-
-
 .spinner {
   width: 40px;
   height: 40px;
@@ -530,66 +644,8 @@
   border-top-color: #2d7fff;
 }
 
-
-
 .carregando-texto {
   font-size: 13px;
   font-weight: 600;
   color: rgba(255,255,255,0.55);
-}
-
-
-
-/* — ícone dentro do botão "editar equipe" (lápis) —
-   classe pra usar no seu ícone: .icone-editar-equipe */
-/* ícones "mascarados" — em vez de <img>, usamos o PNG (branco) como
-   máscara de recorte e pintamos com background-color. Assim o ícone
-   fica sempre na cor do botão/container em que está, em vez do
-   branco original do arquivo */
-.icone-mascarado {
-  display: inline-block;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-}
-
-
-
-.icone-editar-equipe {
-  width: 15px;
-  height: 15px;
-  background-color: #4d9fff; /* mesma cor do botão "editar" (azul) */
-}
-
-
-
-/* mensagem de "equipe selecionada" — substitui o antigo selo/badge
-   redondo por um aviso em texto, exibido abaixo das ações do card */
-
-.equipe-selecionada-aviso {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 2px;
-  padding-top: 8px;
-  border-top: 1px dashed rgba(45,127,255,0.25);
-  color: #4d9fff;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-
-
-/* — ícone de check da mensagem de "equipe selecionada" —
-   classe: .icone-check-selecionada */
-.icone-check-selecionada {
-  display: inline-block;
-  width: 13px;
-  height: 13px;
-  object-fit: contain;
-  flex-shrink: 0;
 }

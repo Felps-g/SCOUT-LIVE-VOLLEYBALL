@@ -69,6 +69,19 @@ const TOTAL_TITULARES = Object.values(POSICOES_REQUERIDAS).reduce((a, b) => a + 
 // nome de exibição (Líbero tem acento, mas a chave interna fica sem para simplificar)
 const NOME_POSICAO = { Levantador: 'Levantador', Oposto: 'Oposto', Ponteiro: 'Ponteiro', Central: 'Central', Libero: 'Líbero' };
 
+// a posição gravada no cadastro do atleta é o nome de exibição (ex.: "Líbero",
+// com acento), enquanto as chaves internas do scout não têm acento (Libero).
+// Essa função aceita os dois formatos e devolve sempre o nome de exibição.
+function semAcento(texto) {
+  return String(texto || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+}
+
+function nomePosicaoCadastro(position) {
+  if (!position) return '';
+  const chave = Object.keys(NOME_POSICAO).find(k => semAcento(k) === semAcento(position));
+  return chave ? NOME_POSICAO[chave] : position;
+}
+
 // fundamentos que geram ponto, por posição
 const FUNDAMENTOS_PONTUAM = {
   Levantador: ['Saque', 'Bloqueio', 'Ataque'],
@@ -324,7 +337,7 @@ export default function ScoutLive() {
     const idsEmQuadra = new Set(titulares.map(t => t.id));
     return jogadores
       .filter(j => !idsEmQuadra.has(j.id))
-      .map(j => ({ id: j.id, nome: nomesExibicaoMap[j.id] || 'Atleta', numero: numerosMap[j.id] }))
+      .map(j => ({ id: j.id, nome: nomesExibicaoMap[j.id] || 'Atleta', numero: numerosMap[j.id], posicao: nomePosicaoCadastro(j.position) }))
       .sort((a, b) => a.numero - b.numero);
   }, [jogadores, titulares, numerosMap, nomesExibicaoMap]);
 
@@ -683,8 +696,19 @@ export default function ScoutLive() {
               )}
             </div>
 
-            <div className="escalacao-contador">
-              {totalSelecionados}/{TOTAL_TITULARES} titulares selecionados
+            <div className="escalacao-vagas" role="list" aria-label="Vagas por posição">
+              {POSICOES.map(pos => {
+                const qtd = contagemPorPosicao[pos];
+                const exigido = POSICOES_REQUERIDAS[pos];
+                const completa = qtd >= exigido;
+                return (
+                  <div key={pos} role="listitem" className={`ev-vaga${completa ? ' completa' : ''}`}>
+                    {completa && <IcCheck />}
+                    <span className="ev-vaga-nome">{NOME_POSICAO[pos]}</span>
+                    <span className="ev-vaga-qtd">{qtd}/{exigido}</span>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="escalacao-lista">
@@ -699,10 +723,12 @@ export default function ScoutLive() {
                 return (
                   <div key={j.id} className={`escalacao-jogador${posicaoEscolhida ? ' selecionado' : ''}`}>
                     <div className="ej-info">
-                      <span className={`ej-radio${posicaoEscolhida ? ' marcado' : ''}`} />
+                      <span className="ej-numero" aria-label={`Camisa ${cadastroDoJogador(j)}`}>{cadastroDoJogador(j)}</span>
                       <div className="ej-textos">
                         <span className="ej-nome">{nomesExibicaoMap[j.id] || j.name || j.nome}</span>
-                        <span className="ej-cadastro">cadastro: {cadastroDoJogador(j)}</span>
+                        <span className="ej-cadastro">
+                          {j.position ? `Cadastrado como ${nomePosicaoCadastro(j.position)}` : 'Sem posição cadastrada'}
+                        </span>
                       </div>
                     </div>
                     <div className="ej-posicoes">
@@ -715,6 +741,8 @@ export default function ScoutLive() {
                             type="button"
                             className={`ej-btn-pos${ativa ? ' ativo' : ''}`}
                             disabled={cheia}
+                            aria-pressed={ativa}
+                            title={cheia ? 'Vagas dessa posição já preenchidas' : undefined}
                             onClick={() => togglePosicao(j.id, pos)}
                           >
                             {NOME_POSICAO[pos]}
@@ -727,9 +755,29 @@ export default function ScoutLive() {
               })}
             </div>
 
-            <button type="button" className="btn-iniciar-scout" disabled={!podeIniciar} onClick={iniciarScout}>
-              Iniciar Scout
-            </button>
+            {/* barra fixa: acompanha a rolagem e fica sempre à vista, descolada da borda da tela */}
+            <div className="escalacao-rodape">
+              <div className="er-progresso">
+                <span className="er-texto">
+                  {podeIniciar
+                    ? 'Escalação completa'
+                    : `${totalSelecionados} de ${TOTAL_TITULARES} titulares`}
+                </span>
+                <div
+                  className="er-barra"
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={TOTAL_TITULARES}
+                  aria-valuenow={totalSelecionados}
+                  aria-label="Titulares selecionados"
+                >
+                  <span className="er-barra-preenchida" style={{ width: `${(totalSelecionados / TOTAL_TITULARES) * 100}%` }} />
+                </div>
+              </div>
+              <button type="button" className="btn-iniciar-scout" disabled={!podeIniciar} onClick={iniciarScout}>
+                Iniciar scout
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -937,6 +985,7 @@ export default function ScoutLive() {
                   onClick={() => setTrocaEntra(b.id)}
                 >
                   <span className="troca-nome">{b.nome} nº {b.numero}</span>
+                  {b.posicao && <span className="troca-pos">{b.posicao}</span>}
                 </button>
               ))}
             </div>
