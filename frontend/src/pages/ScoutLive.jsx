@@ -108,6 +108,22 @@ function fundamentosDaPosicao(posicao) {
 
 /* ── HELPERS ────────────────────────────────────────────── */
 
+// scout em andamento fica salvo no aparelho, pra não perder se a conexão cair ou a página recarregar
+const CHAVE_SCOUT_ANDAMENTO = 'scout_em_andamento';
+
+function lerScoutAndamento(timeId) {
+  try {
+    const bruto = localStorage.getItem(CHAVE_SCOUT_ANDAMENTO);
+    if (!bruto) return null;
+    const salvo = JSON.parse(bruto);
+    if (!salvo || salvo.timeId !== timeId) return null;
+    if (!Array.isArray(salvo.titulares) || salvo.titulares.length === 0) return null;
+    return salvo;
+  } catch {
+    return null;
+  }
+}
+
 // número de cadastro (camisa) do jogador, direto do cadastro do atleta
 function cadastroDoJogador(j) {
   return j?.jersey_number ?? j?.number ?? j?.numero ?? j?.camisa ?? '—';
@@ -221,18 +237,19 @@ export default function ScoutLive() {
   // fixo assim que a página abre — trocar de equipe agora só é feito na
   // tela de Equipes; aqui é só leitura
   const [timeAtual] = useState(getTimeSelecionado());
+  const [salvoAndamento] = useState(() => lerScoutAndamento(getTimeSelecionado()?.id));
   const [jogadores, setJogadores] = useState([]);
   const [carregandoJogadores, setCarregandoJogadores] = useState(false);
   const [erroJogadores, setErroJogadores] = useState('');
 
   /* ── ESCALAÇÃO ── */
-  const [escalacaoAberta, setEscalacaoAberta]     = useState(true);
-  const [selecoes, setSelecoes]                   = useState({}); // { jogadorId: 'Ponteiro' }
-  const [titulares, setTitulares]                 = useState([]); // [{id,nome,numero,posicao}]
+  const [escalacaoAberta, setEscalacaoAberta]     = useState(!salvoAndamento);
+  const [selecoes, setSelecoes]                   = useState(salvoAndamento?.selecoes || {}); // { jogadorId: 'Ponteiro' }
+  const [titulares, setTitulares]                 = useState(salvoAndamento?.titulares || []); // [{id,nome,numero,posicao}]
 
   /* ── SCOUT ── */
-  const [setAtual, setSetAtual] = useState(1);
-  const [dados, setDados]       = useState({}); // dados[jogadorId][set] = { acerto, erro, eventos:[] }
+  const [setAtual, setSetAtual] = useState(salvoAndamento?.setAtual || 1);
+  const [dados, setDados]       = useState(salvoAndamento?.dados || {}); // dados[jogadorId][set] = { acerto, erro, eventos:[] }
   const [jogadorAberto, setJogadorAberto] = useState(null); // id do titular com modal de fundamentos aberto
 
   /* ── TROCA ── */
@@ -279,6 +296,23 @@ export default function ScoutLive() {
     if (timeAtual) carregarJogadores(timeAtual);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // grava o scout a cada mudança; quando a partida acaba (ou volta pra escalação) apaga
+  useEffect(() => {
+    try {
+      if (escalacaoAberta || titulares.length === 0 || !timeAtual?.id) {
+        localStorage.removeItem(CHAVE_SCOUT_ANDAMENTO);
+        return;
+      }
+      localStorage.setItem(CHAVE_SCOUT_ANDAMENTO, JSON.stringify({
+        timeId: timeAtual.id,
+        selecoes,
+        titulares,
+        setAtual,
+        dados,
+      }));
+    } catch { /* ignora */ }
+  }, [escalacaoAberta, titulares, selecoes, setAtual, dados, timeAtual]);
 
   // número exibido ao lado do nome: sempre o número de cadastro do atleta
   // (campo jersey_number, preenchido no cadastro do jogador); só cai pra
