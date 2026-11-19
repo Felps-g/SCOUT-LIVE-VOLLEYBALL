@@ -237,6 +237,7 @@ export default function ScoutLive() {
   // fixo assim que a página abre — trocar de equipe agora só é feito na
   // tela de Equipes; aqui é só leitura
   const [timeAtual] = useState(getTimeSelecionado());
+  const [confirmarSairAberto, setConfirmarSairAberto] = useState(false);
   const [salvoAndamento] = useState(() => lerScoutAndamento(getTimeSelecionado()?.id));
   const [jogadores, setJogadores] = useState([]);
   const [carregandoJogadores, setCarregandoJogadores] = useState(false);
@@ -697,12 +698,27 @@ export default function ScoutLive() {
     }
   }
 
+  // só pergunta antes de sair se tem scout rodando
+  const scoutEmAndamento = !escalacaoAberta && titulares.length > 0;
+
+  // confirmou: apaga o scout e o rascunho e vai pro início
+  function confirmarVoltarInicio() {
+    try { localStorage.removeItem(CHAVE_SCOUT_ANDAMENTO); } catch { /* ignora */ }
+    setTitulares([]);
+    setSelecoes({});
+    setDados({});
+    setSetAtual(1);
+    setEscalacaoAberta(true);
+    setConfirmarSairAberto(false);
+    window.location.hash = '#/';
+  }
+
   const ebForm = (id) => errosForm.includes(id) ? { borderColor: 'rgba(232,39,58,0.75)' } : {};
 
   /* ── RENDER ─────────────────────────────────────────── */
   return (
     <div className="app">
-      <MenuHamburguer />
+      <MenuHamburguer aoVoltarInicio={scoutEmAndamento ? () => setConfirmarSairAberto(true) : undefined} />
 
       {/* ── CABEÇALHO ── */}
       <header className="header">
@@ -1033,6 +1049,31 @@ export default function ScoutLive() {
             >
               Confirmar troca
             </button>
+          </div>
+        )}
+      </div>
+
+      {/* ══════════════════════ MODAL: CONFIRMAR VOLTAR AO INÍCIO ══════════════════════ */}
+      <div className={`overlay${confirmarSairAberto ? ' open' : ''}`}
+           onClick={e => e.target === e.currentTarget && setConfirmarSairAberto(false)}>
+        {confirmarSairAberto && (
+          <div className="modal modal-salvar">
+            <div className="modal-handle" />
+            <div className="salvar-fase">
+              <div className="mf-header">
+                <span className="modal-titulo-simples">Voltar ao início?</span>
+                <button type="button" className="modal-close" onClick={() => setConfirmarSairAberto(false)}>
+                  <IcX />
+                </button>
+              </div>
+              <p style={{ margin: '12px 0 20px', lineHeight: 1.5 }}>
+                O scout feito e as informações obtidas serão perdidos.
+              </p>
+              <div className="modal-acoes">
+                <button type="button" className="mbtn-cancel" onClick={() => setConfirmarSairAberto(false)}>Cancelar</button>
+                <button type="button" className="mbtn-ok" onClick={confirmarVoltarInicio}>Confirmar</button>
+              </div>
+            </div>
           </div>
         )}
       </div>
