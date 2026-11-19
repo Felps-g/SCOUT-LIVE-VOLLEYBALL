@@ -556,19 +556,21 @@
   }
 }
 
-/* ajuste ipad/tablet */
-.aplicativo {
-  height: 100vh;
-  height: 100dvh;
+/* ajuste ipad/tablet (só dispositivo de toque, computador fica como estava) */
+@media (pointer: coarse) {
+  .aplicativo {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .grade-navegacao {
+    min-height: 0;
+    overflow-y: auto;
+  }
 }
 
-.grade-navegacao {
-  min-height: 0;
-  overflow-y: auto;
-}
-
-/* tablet em pé: 2x2 que cabe na altura da tela */
-@media (min-width: 768px) {
+/* tablet em pé: 2 em cima e 2 embaixo */
+@media (pointer: coarse) and (min-width: 768px) {
   .grade-navegacao {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, minmax(0, 1fr));
@@ -583,8 +585,8 @@
   }
 }
 
-/* tablet deitado e telas largas: 4 em uma linha */
-@media (min-width: 768px) and (orientation: landscape), (min-width: 1200px) {
+/* tablet deitado: fileira com os quatro */
+@media (pointer: coarse) and (min-width: 768px) and (orientation: landscape) {
   .grade-navegacao {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: minmax(0, 1fr);
