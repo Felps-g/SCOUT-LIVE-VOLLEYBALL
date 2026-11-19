@@ -18,7 +18,8 @@ const ITENS_MENU = [
   { href: '#/app/atletas',  texto: 'Atletas' },
 ];
 
-export default function MenuHamburguer() {
+// aoVoltarInicio (opcional): se vier, "Voltar ao início" chama essa função em vez de navegar direto
+export default function MenuHamburguer({ aoVoltarInicio }) {
   const [aberto, setAberto] = useState(false);
 
   return (
@@ -44,7 +45,13 @@ export default function MenuHamburguer() {
                 key={item.href}
                 href={item.href}
                 className={`menu-hamburguer-item ${item.classe || ''}`}
-                onClick={() => setAberto(false)}
+                onClick={e => {
+                  setAberto(false);
+                  if (item.href === '#/' && aoVoltarInicio) {
+                    e.preventDefault();
+                    aoVoltarInicio();
+                  }
+                }}
               >
                 {item.texto}
               </a>
