@@ -358,18 +358,20 @@
 .perfil-login-botao:hover  { background: rgba(45,127,255,0.28); }
 .perfil-login-botao:active { transform: scale(0.97); }
 
-/* ajuste ipad/tablet */
-.pagina-app:has(.perfil-conteudo) {
-  max-height: 100dvh;
-}
+/* ajuste ipad/tablet (só dispositivo de toque, computador fica como estava) */
+@media (pointer: coarse) {
+  .pagina-app:has(.perfil-conteudo) {
+    max-height: 100dvh;
+  }
 
-.perfil-conteudo {
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  .perfil-conteudo {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
 }
 
 /* tela deitada / baixa: cartão em 2 colunas pra não cortar */
-@media (min-width: 768px) and (orientation: landscape) and (max-height: 900px) {
+@media (pointer: coarse) and (min-width: 768px) and (orientation: landscape) and (max-height: 900px) {
   .perfil-conteudo {
     padding: 24px 32px 32px;
   }
