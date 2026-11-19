@@ -577,7 +577,8 @@
 
   .botao-nav {
     aspect-ratio: auto;
-    max-height: 520px;
+    height: 100%;
+    max-height: 560px;
     align-self: center;
   }
 }
@@ -587,5 +588,9 @@
   .grade-navegacao {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: minmax(0, 1fr);
+  }
+
+  .botao-nav {
+    max-height: 480px;
   }
 }
